@@ -52,7 +52,7 @@ function SubjectsForm({
       semesterArr.push(i + 1);
     }
     setSemesterAmount(semesterArr);
-  }, [open]);
+  }, [open, course]);
 
   const handleActive = (subj) => {
     //changes active state of subject
@@ -104,14 +104,28 @@ function SubjectsForm({
     return (
       <>
         {!!course.subjects ? (
-          course.subjects.map((subject) => (
-            <SubjectCard
-              subject={subject}
-              key={subject.id}
-              handleActive={handleActive}
-              handleDeleteSubject={handleDeleteSubject}
-            />
-          ))
+          subject_types.map((type) => {
+            return (
+              <div className={classes.subjectType}>
+                <Typography>{type}</Typography>
+                <Divider />
+                <div className={classes.subjectList}>
+                  {course.subjects.map((subject) => {
+                    if (subject.type === type) {
+                      return (
+                        <SubjectCard
+                          subject={subject}
+                          key={subject.id}
+                          handleActive={handleActive}
+                          handleDeleteSubject={handleDeleteSubject}
+                        />
+                      );
+                    } else return null;
+                  })}
+                </div>
+              </div>
+            );
+          })
         ) : (
           <Typography>Não há disciplinas cadastradas</Typography>
         )}
@@ -181,7 +195,7 @@ function SubjectsForm({
             <Select
               native
               className={classes.formFlex}
-              value={newSubject.type}
+              value={newSubject.semester}
               onChange={(e) =>
                 setNewSubject({
                   ...newSubject,
@@ -279,6 +293,11 @@ const useStyles = makeStyles((theme) => ({
       outline: "none",
     },
   },
+  subjectList: {
+    display: "flex",
+    flexWrap: "wrap",
+  },
+  subjectType: { display: "flex", flexDirection: "column", flex: 1 },
   heading: { flexGrow: 1 },
   modalHeader: {
     display: "flex",
@@ -312,7 +331,7 @@ const useStyles = makeStyles((theme) => ({
   },
   subjectContainer: {
     display: "flex",
-    flexWrap: "wrap",
+    flexDirection: "column",
     flexGrow: 1,
     overflowY: "scroll",
   },

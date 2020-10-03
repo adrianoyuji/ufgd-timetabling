@@ -110,6 +110,14 @@ export const GlobalProvider = ({ children }) => {
           semester: 1,
         },
         {
+          id: "070087217",
+          name: "LABORATÓRIO DE PROGRAMAÇÃO II",
+          type: "ELT",
+          workload: 72,
+          active: true,
+          semester: 1,
+        },
+        {
           id: "07008718",
           name: "LINGUAGENS FORMAIS E AUTÔMATOS",
           type: "OBR",
@@ -136,8 +144,6 @@ export const GlobalProvider = ({ children }) => {
       ],
     },
   ]);
-
-  console.log(courses);
 
   const professors = professorsDB.filter((professor) => professor.active);
   const subjects = subjectsDB.filter((subject) => subject.active);
