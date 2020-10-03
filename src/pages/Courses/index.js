@@ -1,9 +1,11 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { GlobalContext } from "../../context/global";
 
 //components
 import CourseAccordion from "../../components/CourseAccordion";
+import CourseForm from "../../components/CourseForm";
+import SubjectsForm from "../../components/SubjectsForm";
 
 //material ui
 import Typography from "@material-ui/core/Typography";
@@ -14,9 +16,39 @@ import Divider from "@material-ui/core/Divider";
 function Courses() {
   const classes = useStyles();
   const { courses, updateCourses } = useContext(GlobalContext);
+  const [courseModal, setCourseModal] = useState(null);
+  const [subjectModal, setSubjectModal] = useState(null);
 
   const handleDeleteCourse = (data) => {
     updateCourses(courses.filter((item) => item.id !== data.id));
+  };
+
+  const handleSaveCourse = (form) => {
+    updateCourses([...courses, { ...form }]);
+  };
+
+  const handleEditCourse = (form) => {
+    updateCourses(
+      courses.map((course) => {
+        if (course.id === form.id) {
+          return { ...form };
+        } else {
+          return course;
+        }
+      })
+    );
+  };
+
+  const handleSubjectChange = (form) => {
+    updateCourses(
+      courses.map((course) => {
+        if (course.id === form.id) {
+          return { ...form };
+        } else {
+          return course;
+        }
+      })
+    );
   };
 
   return (
@@ -30,6 +62,7 @@ function Courses() {
           color="primary"
           className={classes.button}
           startIcon={<AddIcon />}
+          onClick={() => setCourseModal(true)}
         >
           Adicionar Curso
         </Button>
@@ -42,6 +75,8 @@ function Courses() {
               course={course}
               key={course.tag}
               handleDeleteCourse={handleDeleteCourse}
+              setCourseModal={setCourseModal}
+              setSubjectModal={setSubjectModal}
             />
           ))
         ) : (
@@ -50,6 +85,20 @@ function Courses() {
           </Typography>
         )}
       </div>
+      <CourseForm
+        open={!!courseModal}
+        handleClose={() => setCourseModal(false)}
+        course={{ ...courseModal }}
+        handleSaveCourse={handleSaveCourse}
+        handleEditCourse={handleEditCourse}
+      />
+      <SubjectsForm
+        open={!!subjectModal}
+        setSubjectModal={setSubjectModal}
+        handleClose={() => setSubjectModal(false)}
+        course={{ ...subjectModal }}
+        handleSubjectChange={handleSubjectChange}
+      />
     </div>
   );
 }

@@ -16,7 +16,11 @@ import DateRangeIcon from "@material-ui/icons/DateRange";
 const drawerWidth = 240;
 const firstSection = [
   { title: "Home", value: "home", icon: <HomeIcon /> },
-  { title: "Gerar tabela", value: "generateSolution", icon: <DateRangeIcon /> },
+  {
+    title: "Gerar Horários",
+    value: "generateSolution",
+    icon: <DateRangeIcon />,
+  },
   { title: "Sobre", value: "about", icon: <InfoIcon /> },
 ];
 const secondSection = [

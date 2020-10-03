@@ -13,7 +13,7 @@ export const GlobalProvider = ({ children }) => {
       years: 5,
       subjects: [
         {
-          id: "07008717",
+          id: "1",
           name: "LABORATÓRIO DE PROGRAMAÇÃO II",
           type: "OBR",
           workload: 72,
@@ -21,7 +21,7 @@ export const GlobalProvider = ({ children }) => {
           semester: 1,
         },
         {
-          id: "07008718",
+          id: "2",
           name: "LINGUAGENS FORMAIS E AUTÔMATOS",
           type: "OBR",
           workload: 72,
@@ -29,7 +29,55 @@ export const GlobalProvider = ({ children }) => {
           semester: 2,
         },
         {
-          id: "07008719",
+          id: "3",
+          name: "LABORATÓRIO DE PROGRAMAÇÃO II",
+          type: "OBR",
+          workload: 72,
+          active: true,
+          semester: 1,
+        },
+        {
+          id: "4",
+          name: "LINGUAGENS FORMAIS E AUTÔMATOS",
+          type: "OBR",
+          workload: 72,
+          active: true,
+          semester: 2,
+        },
+        {
+          id: "5",
+          name: "LABORATÓRIO DE PROGRAMAÇÃO II",
+          type: "OBR",
+          workload: 72,
+          active: true,
+          semester: 1,
+        },
+        {
+          id: "6",
+          name: "LINGUAGENS FORMAIS E AUTÔMATOS",
+          type: "OBR",
+          workload: 72,
+          active: true,
+          semester: 2,
+        },
+        {
+          id: "7",
+          name: "LABORATÓRIO DE PROGRAMAÇÃO II",
+          type: "OBR",
+          workload: 72,
+          active: true,
+          semester: 1,
+        },
+        {
+          id: "8",
+          name: "LINGUAGENS FORMAIS E AUTÔMATOS",
+          type: "OBR",
+          workload: 72,
+          active: true,
+          semester: 2,
+        },
+        {
+          id: "9",
           name: "MÉTODOS NUMÉRICOS PARA COMPUTAÇÃO",
           type: "OBR",
           workload: 72,
@@ -37,7 +85,7 @@ export const GlobalProvider = ({ children }) => {
           semester: 3,
         },
         {
-          id: "07008729",
+          id: "10",
           name: "MICROCONTROLADORES E APLICAÇÕES",
           type: "OBR",
           workload: 72,
@@ -88,6 +136,8 @@ export const GlobalProvider = ({ children }) => {
       ],
     },
   ]);
+
+  console.log(courses);
 
   const professors = professorsDB.filter((professor) => professor.active);
   const subjects = subjectsDB.filter((subject) => subject.active);

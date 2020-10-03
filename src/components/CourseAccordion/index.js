@@ -12,7 +12,12 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import SubjectIcon from "@material-ui/icons/Subject";
 
-function CourseAccordion({ course, handleDeleteCourse }) {
+function CourseAccordion({
+  course,
+  handleDeleteCourse,
+  setCourseModal,
+  setSubjectModal,
+}) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
 
@@ -67,9 +72,17 @@ function CourseAccordion({ course, handleDeleteCourse }) {
               color="primary"
               className={classes.button}
               startIcon={<SubjectIcon />}
-              //onClick={()=>null}
+              onClick={() => setSubjectModal({ ...course })}
             >
               Disciplinas
+            </Button>
+            <Button
+              variant="contained"
+              className={classes.button}
+              startIcon={<EditIcon />}
+              onClick={() => setCourseModal({ ...course })}
+            >
+              Editar
             </Button>
             <Button
               variant="contained"
@@ -79,14 +92,6 @@ function CourseAccordion({ course, handleDeleteCourse }) {
               onClick={() => handleDeleteCourse(course)}
             >
               Remover
-            </Button>
-            <Button
-              variant="contained"
-              className={classes.button}
-              startIcon={<EditIcon />}
-              // onClick={()=>null}
-            >
-              Editar
             </Button>
           </div>
         </AccordionDetails>
