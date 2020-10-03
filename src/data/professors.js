@@ -6,6 +6,7 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: true,
+    courses: ["SI", "EC"],
   },
   {
     name: "Alexandre Szabo",
@@ -14,6 +15,7 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: true,
+    courses: ["SI", "EC"],
   },
   {
     name: "Anderson Bessa da Costa",
@@ -22,6 +24,7 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: true,
+    courses: ["SI", "EC"],
   },
   {
     name: "Carla Adriana Barvinski Zanchett",
@@ -30,6 +33,7 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: true,
+    courses: ["SI", "EC"],
   },
   {
     name: "Carlos Elias Arminio Zampieri",
@@ -38,6 +42,7 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: true,
+    courses: ["SI", "EC"],
   },
   {
     name: "Claudia Regina Tinós Peviani",
@@ -46,6 +51,7 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: false,
+    courses: ["SI", "EC"],
   },
   {
     name: "Evanise Araujo Caldas",
@@ -54,6 +60,7 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: true,
+    courses: ["SI", "EC"],
   },
   {
     name: "Everton Castelão Tetila",
@@ -62,6 +69,7 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: true,
+    courses: ["SI", "EC"],
   },
   {
     name: "Felipe Jose Carbone",
@@ -70,6 +78,7 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: true,
+    courses: ["SI", "EC"],
   },
   {
     name: "Janne Yukiko Yoshikawa Oeiras Lachi	",
@@ -78,6 +87,7 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: false,
+    courses: ["SI", "EC"],
   },
   {
     name: "Joinvile Batista Junior",
@@ -86,6 +96,7 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: true,
+    courses: ["SI", "EC"],
   },
   {
     name: "Marcos Mansano Furlan",
@@ -94,6 +105,7 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: true,
+    courses: ["SI", "EC"],
   },
   {
     name: "Marcos Paulo Moro",
@@ -102,6 +114,7 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: true,
+    courses: ["SI", "EC"],
   },
   {
     name: "Murilo Táparo",
@@ -110,6 +123,7 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: true,
+    courses: ["SI", "EC"],
   },
   {
     name: "Rodrigo Porfírio da Silva Sacchi",
@@ -118,6 +132,7 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: true,
+    courses: ["SI", "EC"],
   },
   {
     name: "Rodrigo Yoshikawa Oeiras",
@@ -126,6 +141,7 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: true,
+    courses: ["SI", "EC"],
   },
   {
     name: "Rosenilda Marques da Silva Felipe",
@@ -134,6 +150,7 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: true,
+    courses: ["SI", "EC"],
   },
   {
     name: "Silvana Morita Melo",
@@ -142,6 +159,7 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: true,
+    courses: ["SI", "EC"],
   },
   {
     name: "Valguima Victoria Viana Aguiar Odakura",
@@ -150,6 +168,7 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: true,
+    courses: ["SI", "EC"],
   },
   {
     name: "Vanderson Hafemann Fragal",
@@ -158,6 +177,7 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: false,
+    courses: ["SI", "EC"],
   },
   {
     name: "Wellington Lima dos Santos",
@@ -166,6 +186,7 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: true,
+    courses: ["SI", "EC"],
   },
   {
     name: "Willian Paraguassu Amorim",
@@ -174,5 +195,6 @@ export default [
     workload: { min: 2, max: 20 },
     preferences: {},
     active: true,
+    courses: ["SI", "EC"],
   },
 ];

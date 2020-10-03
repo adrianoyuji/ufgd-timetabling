@@ -37,6 +37,14 @@ function Solution() {
     generationLimiter: 20,
   });
 
+  const semesterModifier = () => {
+    if (semester === 1) {
+      return 1;
+    } else {
+      return 2;
+    }
+  };
+
   const generateIndividual = () => {
     let randomYear, randomDay, randomPeriod, randomProfessor;
     let newIndividual = JSON.parse(JSON.stringify(empty_years));
@@ -44,7 +52,7 @@ function Solution() {
     subjects.forEach((subject, index) => {
       if (subject.semester % 2 === semester) {
         for (let i = 0; i < subject.workload / 36; i++) {
-          randomYear = years[Math.floor(Math.random() * (4 - 0 + 1)) + 0];
+          randomYear = years[(subject.semester - semesterModifier()) / 2];
           randomDay = days[Math.floor(Math.random() * (4 - 0 + 1)) + 0];
           randomPeriod = Math.floor(Math.random() * (7 - 0 + 1)) + 0;
           randomProfessor =
@@ -72,7 +80,7 @@ function Solution() {
           if (!!period.subject) {
             if (period.subject.semester !== parseYear(year) - semester) {
               score -= 10;
-            } else score += 10;
+            } //else score += 10;
           }
         });
       }
@@ -93,17 +101,14 @@ function Solution() {
             });
           }
         }
-        if (
-          subject.workload > subjectWorkload ||
-          subject.workload < subjectWorkload
-        ) {
+        if (subject.workload !== subjectWorkload) {
           score -= 10;
-        } else score += 5;
+        } // else score += 5;
       }
     });
 
     //professor has less than min hours or over max hours a week - hard constraint
-    let profWorkload = 0;
+    /* let profWorkload = 0;
     professors.forEach((professor) => {
       profWorkload = 0;
       for (let year in individual) {
@@ -111,7 +116,7 @@ function Solution() {
           individual[year][day].forEach((period) => {
             if (!!period.professor) {
               if (period.professor.name === professor.name) {
-                profWorkload += 1;
+                profWorkload += 10;
               }
             }
           });
@@ -123,7 +128,7 @@ function Solution() {
       ) {
         score -= 10;
       }
-    });
+    }); */
     //professor x can teach only one class at one time. - hard constraint
     days.forEach((day) => {
       for (let i = 0; i < 8; i++) {
@@ -160,7 +165,7 @@ function Solution() {
       }
     });
     //check if professor's preferences matches current allocation - soft
-    for (let year in individual) {
+    /*  for (let year in individual) {
       for (let day in individual[year]) {
         for (let i = 0; i < 8; i++) {
           if (!!individual[year][day][i].subject) {
@@ -177,7 +182,7 @@ function Solution() {
           }
         }
       }
-    }
+    } */
 
     //both subjects classes in the same day -soft
 
@@ -262,10 +267,10 @@ function Solution() {
         Math.floor(Math.random() * (professors.length - 1 - 0 + 1)) + 0;
       let randomSubject =
         Math.floor(Math.random() * (subjects.length - 1 - 0 + 1)) + 0;
-      if (subjects[randomSubject].semester % 2 === semester) {
+      /*if (subjects[randomSubject].semester % 2 === semester) {
         children[0][randomYear][randomDay][randomPeriod].subject =
-          subjects[randomSubject];
-      }
+          subjects[randomSubject]
+      };*/
       children[0][randomYear][randomDay][randomPeriod].professor =
         professors[randomProfessor];
       fitness(children[0]);
@@ -283,8 +288,8 @@ function Solution() {
       let randomSubject =
         Math.floor(Math.random() * (subjects.length - 1 - 0 + 1)) + 0;
       if (subjects[randomSubject].semester % 2 === semester) {
-        children[1][randomYear][randomDay][randomPeriod].subject =
-          subjects[randomSubject];
+        /* children[1][randomYear][randomDay][randomPeriod].subject =
+          subjects[randomSubject]; */
         children[1][randomYear][randomDay][randomPeriod].professor =
           professors[randomProfessor];
       }

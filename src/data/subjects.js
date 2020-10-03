@@ -38,6 +38,7 @@ export default [
     workload: 72,
     active: true,
     semester: 6,
+  
   },
   {
     id: "07008721",
