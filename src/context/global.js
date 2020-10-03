@@ -144,17 +144,59 @@ export const GlobalProvider = ({ children }) => {
       ],
     },
   ]);
+  const [professors, setProfessors] = useState([
+    {
+      name: "Adailton José Alves da Cruz",
+      email: "adailtoncruz@ufdg.edu.br",
+      id: 120,
+      workload: { min: 2, max: 20 },
+      preferences: {},
+      active: true,
+      courses: ["SI", "EC"],
+    },
+    {
+      name: "Alexandre Szabo",
+      email: "alexandreszabo@ufgd.edu.br",
+      id: 1245131,
+      workload: { min: 2, max: 20 },
+      preferences: {},
+      active: true,
+      courses: ["SI", "EC"],
+    },
+    {
+      name: "Anderson Bessa da Costa",
+      email: "andersoncosta@ufgd.edu.br",
+      id: 12312332,
+      workload: { min: 2, max: 20 },
+      preferences: {},
+      active: true,
+      courses: ["SI", "EC"],
+    },
+    {
+      name: "Carla Adriana Barvinski Zanchett",
+      email: "carlazanchet@ufgd.edu.br",
+      id: 3312312,
+      workload: { min: 2, max: 20 },
+      preferences: {},
+      active: true,
+      courses: ["EC"],
+    },
+  ]);
 
-  const professors = professorsDB.filter((professor) => professor.active);
+  //const professors = professorsDB.filter((professor) => professor.active);
   const subjects = subjectsDB.filter((subject) => subject.active);
 
   function updateCourses(data) {
     setCourses([...data]);
   }
 
+  function updateProfessors(data) {
+    setProfessors([...data]);
+  }
+
   return (
     <GlobalContext.Provider
-      value={{ professors, subjects, courses, updateCourses }}
+      value={{ professors, subjects, courses, updateCourses, updateProfessors }}
     >
       {children}
     </GlobalContext.Provider>

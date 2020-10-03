@@ -198,6 +198,14 @@ function CourseForm({
         <div className={classes.buttonContainer}>
           <Button
             variant="contained"
+            className={classes.button}
+            startIcon={<RotateLeftIcon />}
+            onClick={() => handleReset()}
+          >
+            Reiniciar
+          </Button>
+          <Button
+            variant="contained"
             color="primary"
             size="large"
             className={classes.button}
@@ -205,14 +213,6 @@ function CourseForm({
             onClick={() => validadeForm()}
           >
             Salvar
-          </Button>
-          <Button
-            variant="contained"
-            className={classes.button}
-            startIcon={<RotateLeftIcon />}
-            onClick={() => handleReset()}
-          >
-            Reiniciar
           </Button>
         </div>
       </div>

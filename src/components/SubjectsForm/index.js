@@ -21,14 +21,14 @@ import CancelIcon from "@material-ui/icons/Cancel";
 //components
 import SubjectCard from "../SubjectCard";
 
-const subject_types = ["OBR", "ELT", "OPT", "LEG"];
+const subject_types = ["OBR", "OPT", "ELT", "LEG"];
 const workload_options = [0, 36, 54, 72, 108];
 const subject_state = {
   id: "",
   name: "",
   type: "OBR",
   workload: 0,
-  active: false,
+  active: true,
   semester: 0,
 };
 
@@ -107,7 +107,9 @@ function SubjectsForm({
           subject_types.map((type) => {
             return (
               <div className={classes.subjectType}>
-                <Typography>{type}</Typography>
+                <Typography>
+                  <b>{type}</b>
+                </Typography>
                 <Divider />
                 <div className={classes.subjectList}>
                   {course.subjects.map((subject) => {

@@ -16,7 +16,7 @@ import Solution from "../../pages/Solution";
 
 function App() {
   const classes = useStyles();
-  const [screen, setScreen] = useState("courses");
+  const [screen, setScreen] = useState("professors");
 
   const HeaderTitle = {
     home: "Home",
