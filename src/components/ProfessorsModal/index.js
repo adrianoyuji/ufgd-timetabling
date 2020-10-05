@@ -73,8 +73,7 @@ function ProfessorsModal({
     if (
       !!professorState.name &&
       !!professorState.email &&
-      !!professorState.id &&
-      !!professorState.courses.length
+      !!professorState.id
     ) {
       if (!!professor.name) {
         handleEditProfessor({ ...professorState });

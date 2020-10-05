@@ -123,7 +123,7 @@ const useStyles = makeStyles((theme) => ({
   professorList: {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "left",
     alignItems: "center",
     flexWrap: "wrap",
   },

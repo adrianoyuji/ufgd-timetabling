@@ -10,7 +10,7 @@ import EditIcon from "@material-ui/icons/Edit";
 
 const useStyles = makeStyles({
   root: {
-    width: "19%",
+    width: "30%",
     margin: "1%",
     height: "auto",
     maxHeight: 240,

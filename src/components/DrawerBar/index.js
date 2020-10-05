@@ -13,7 +13,7 @@ import InfoIcon from "@material-ui/icons/Info";
 import HomeIcon from "@material-ui/icons/Home";
 import DateRangeIcon from "@material-ui/icons/DateRange";
 
-const drawerWidth = 240;
+const drawerWidth = "17.5vw";
 const firstSection = [
   { title: "Home", value: "home", icon: <HomeIcon /> },
   {

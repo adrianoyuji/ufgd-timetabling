@@ -287,7 +287,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     height: window.innerHeight * 0.8,
-    width: "50vw",
+    width: "90vw",
     backgroundColor: "#f5f5f5",
     borderRadius: 8,
     padding: 8,

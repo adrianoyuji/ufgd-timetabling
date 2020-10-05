@@ -38,7 +38,6 @@ export default [
     workload: 72,
     active: true,
     semester: 6,
-  
   },
   {
     id: "07008721",
@@ -300,6 +299,7 @@ export default [
     id: "07008732",
     name: "TECNOLOGIA E COMUNICAÇÃO DE DADOS",
     type: "OBR",
+    workload: 72,
     active: true,
     semester: 7,
   },
@@ -307,7 +307,7 @@ export default [
     id: "06110004484",
     name: "TRABALHO DE CONCLUSÃO DE CURSO I",
     type: "OBR",
-    workload: 90,
+    workload: 72,
     active: false,
     semester: 9,
   },
@@ -315,7 +315,7 @@ export default [
     id: "07009827",
     name: "TRABALHO DE CONCLUSÃO DE CURSO II",
     type: "OBR",
-    workload: 90,
+    workload: 108,
     active: false,
     semester: 10,
   },
