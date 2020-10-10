@@ -62,42 +62,46 @@ function ProfessorCard({
           <b>CH: </b>
           min:{professor.workload.min} h/a max:{professor.workload.max} h/a{" "}
           <br />
-          <div className={classes.tags}>
-            <b>Cursos que leciona: </b>
-            {professor.courses.map((tag) => (
-              <span className={classes.tagSpacing}>{tag}</span>
-            ))}
-          </div>
-          <br />
-          <div className={classes.flexRow}>
-            <b className={classes.activeLabel}>Ativo:</b>
-            <Switch
-              checked={checked}
-              onChange={() => {
-                handleActive({ ...professor, active: !checked });
-                setChecked(!checked);
-              }}
-              color="primary"
-              name="checkedB"
-              inputProps={{ "aria-label": "primary checkbox" }}
-            />
-            <IconButton
-              aria-label="edit"
-              className={classes.deleteIcon}
-              onClick={() => handleEditProfessor({ ...professor })}
-            >
-              <EditIcon />
-            </IconButton>
-            <IconButton
-              aria-label="delete"
-              color="secondary"
-              className={classes.deleteIcon}
-              onClick={() => handleDeleteProfessor({ ...professor })}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </div>
         </Typography>
+        <Typography className={classes.tags}>
+          <b>Cursos que leciona: </b>
+          {professor.courses.map((tag) => (
+            <span key={tag} className={classes.tagSpacing}>
+              {tag}
+            </span>
+          ))}
+        </Typography>
+        <br />
+        <div className={classes.flexRow}>
+          <Typography className={classes.activeLabel}>
+            <b>Ativo:</b>
+          </Typography>
+          <Switch
+            checked={checked}
+            onChange={() => {
+              handleActive({ ...professor, active: !checked });
+              setChecked(!checked);
+            }}
+            color="primary"
+            name="checkedB"
+            inputProps={{ "aria-label": "primary checkbox" }}
+          />
+          <IconButton
+            aria-label="edit"
+            className={classes.deleteIcon}
+            onClick={() => handleEditProfessor({ ...professor })}
+          >
+            <EditIcon />
+          </IconButton>
+          <IconButton
+            aria-label="delete"
+            color="secondary"
+            className={classes.deleteIcon}
+            onClick={() => handleDeleteProfessor({ ...professor })}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </div>
       </CardContent>
     </Card>
   );

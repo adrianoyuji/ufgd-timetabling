@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
 //layout
@@ -16,7 +16,7 @@ import Solution from "../../pages/Solution";
 
 function App() {
   const classes = useStyles();
-  const [screen, setScreen] = useState("home");
+  const [screen, setScreen] = useState("professors");
 
   const HeaderTitle = {
     home: "Home",

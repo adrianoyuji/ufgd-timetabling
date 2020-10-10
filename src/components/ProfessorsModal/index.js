@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import SchedulePicker from "../SchedulePicker";
+import SubjectPicker from "../SubjectPicker";
 
 //ui material core
 import { makeStyles } from "@material-ui/core/styles";
@@ -12,6 +14,7 @@ import FormControl from "@material-ui/core/FormControl";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Chip from "@material-ui/core/Chip";
 
 //ui material icons
 import CloseIcon from "@material-ui/icons/Close";
@@ -25,7 +28,7 @@ const professor_state = {
   email: "",
   id: "",
   workload: { min: 8, max: 20 },
-  preferences: {},
+  preferences: { schedule: {}, subjects: [] },
   active: true,
   courses: [],
 };
@@ -51,6 +54,103 @@ function ProfessorsModal({
     if (!!professor.name) {
       setProfessorState({ ...professor });
     } else setProfessorState({ ...professor_state });
+  };
+
+  const handlePeriod = (period, day, time, status) => {
+    //AVAILABLE -> PREFERENCE -> UNAVAILABLE -> AVAILABLE
+    let newSchedule = {};
+    switch (status) {
+      case "AVAILABLE":
+        newSchedule = {
+          ...professorState.preferences.schedule,
+          [period]: !!professorState.preferences.schedule[period]
+            ? {
+                ...professorState.preferences.schedule[period],
+                [day]: !!professorState.preferences.schedule[period][day]
+                  ? [
+                      ...professorState.preferences.schedule[period][day],
+                      { period: time, status: "PREFERENCE" },
+                    ]
+                  : [{ period: time, status: "PREFERENCE" }],
+              }
+            : {
+                [day]: [{ period: time, status: "PREFERENCE" }],
+              },
+        };
+        setProfessorState({
+          ...professorState,
+          preferences: { ...professorState.preferences, schedule: newSchedule },
+        });
+        break;
+      case "PREFERENCE":
+        newSchedule = {
+          ...professorState.preferences.schedule,
+          [period]: {
+            ...professorState.preferences.schedule[period],
+            [day]: professorState.preferences.schedule[period][day].map(
+              (item) => {
+                if (item.period === time) {
+                  return { period: item.period, status: "UNAVAILABLE" };
+                } else {
+                  return item;
+                }
+              }
+            ),
+          },
+        };
+
+        setProfessorState({
+          ...professorState,
+          preferences: { ...professorState.preferences, schedule: newSchedule },
+        });
+        break;
+      case "UNAVAILABLE":
+        newSchedule = {
+          ...professorState.preferences.schedule,
+          [period]: {
+            ...professorState.preferences.schedule[period],
+            [day]: professorState.preferences.schedule[period][day].filter(
+              (item) => item.period !== time
+            ),
+          },
+        };
+
+        setProfessorState({
+          ...professorState,
+          preferences: { ...professorState.preferences, schedule: newSchedule },
+        });
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleSubjectPicker = (newSubject) => {
+    if (
+      !professorState.preferences.subjects.some(
+        (sub) => sub.name === newSubject.name
+      )
+    ) {
+      setProfessorState({
+        ...professorState,
+        preferences: {
+          ...professorState.preferences,
+          subjects: [...professorState.preferences.subjects, newSubject],
+        },
+      });
+    }
+  };
+
+  const handleChipDelete = (sub) => {
+    setProfessorState({
+      ...professorState,
+      preferences: {
+        ...professorState.preferences,
+        subjects: professorState.preferences.subjects.filter(
+          (item) => item.name !== sub.name
+        ),
+      },
+    });
   };
 
   const handleChange = (event) => {
@@ -151,6 +251,37 @@ function ProfessorsModal({
               />
             ))}
           </FormGroup>
+          <FormGroup>
+            <FormLabel className={classes.formLabel}>
+              Disciplinas Preferidas
+            </FormLabel>
+            <SubjectPicker
+              coursesTags={professorState.courses}
+              onChange={handleSubjectPicker}
+            />
+            <div className={classes.subjectsChips}>
+              {!!professorState.preferences.subjects.length
+                ? professorState.preferences.subjects.map((sub, index) => (
+                    <Chip
+                      label={sub.name}
+                      onDelete={() => handleChipDelete(sub)}
+                      key={index}
+                      className={classes.chip}
+                      color="primary"
+                    />
+                  ))
+                : null}
+            </div>
+          </FormGroup>
+          <FormGroup>
+            <FormLabel className={classes.formLabel}>
+              Horários disponíveis
+            </FormLabel>
+            <SchedulePicker
+              handlePeriod={handlePeriod}
+              schedule={professorState.preferences.schedule}
+            />
+          </FormGroup>
         </FormControl>
         <div className={classes.buttonContainer}>
           <Button
@@ -189,7 +320,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     height: window.innerHeight * 0.8,
-    width: "50vw",
+    width: "80vw",
     backgroundColor: "#f5f5f5",
     borderRadius: 8,
     padding: 8,
@@ -211,6 +342,7 @@ const useStyles = makeStyles((theme) => ({
   professorForm: {
     padding: 8,
     flexGrow: 1,
+    overflowY: "scroll",
   },
   inputText: {
     width: "100%",
@@ -229,5 +361,17 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     alignSelf: "flex-end",
+  },
+  subjectsChips: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  chip: {
+    margin: 4,
+  },
+  formLabel: {
+    marginTop: 8,
+    marginBottom: 8,
   },
 }));

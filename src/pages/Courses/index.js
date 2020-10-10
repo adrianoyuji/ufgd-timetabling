@@ -26,9 +26,10 @@ function Courses() {
     updateCourses(courses.filter((item) => item.id !== data.id));
 
     //remove curso de professores
+    let index = 0;
     updateProfessors(
       professors.map((professor) => {
-        let index = professor.courses.indexOf(data.tag);
+        index = professor.courses.indexOf(data.tag);
         if (index === -1) {
           return professor;
         } else {
