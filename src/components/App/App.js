@@ -12,11 +12,11 @@ import Home from "../../pages/Home";
 import Professors from "../../pages/Professors";
 import Courses from "../../pages/Courses";
 import About from "../../pages/About";
-import Solution from "../../pages/Solution";
+import Solution from "../../pages/Solution2";
 
 function App() {
   const classes = useStyles();
-  const [screen, setScreen] = useState("professors");
+  const [screen, setScreen] = useState("generateSolution");
 
   const HeaderTitle = {
     home: "Home",

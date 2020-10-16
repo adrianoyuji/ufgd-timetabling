@@ -28,7 +28,7 @@ function CourseForm({
   const classes = useStyles();
   const [name, setName] = useState("");
   const [tag, setTag] = useState("");
-  const [years, setYears] = useState("");
+  const [semesters, setSemesters] = useState("");
   const [periods, setPeriods] = useState({
     morning: false,
     afternoon: false,
@@ -39,12 +39,12 @@ function CourseForm({
     if (!!course.name) {
       setName(course.name);
       setTag(course.tag);
-      setYears(course.years);
+      setSemesters(course.semesters);
       setPeriods(course.periods);
     } else {
       setName("");
       setTag("");
-      setYears("");
+      setSemesters("");
       setPeriods({
         morning: false,
         afternoon: false,
@@ -57,12 +57,12 @@ function CourseForm({
     if (!!course.name) {
       setName(course.name);
       setTag(course.tag);
-      setYears(course.years);
+      setSemesters(course.semesters);
       setPeriods(course.periods);
     } else {
       setName("");
       setTag("");
-      setYears("");
+      setSemesters("");
       setPeriods({
         morning: false,
         afternoon: false,
@@ -79,7 +79,7 @@ function CourseForm({
     if (
       !!name &&
       !!tag &&
-      !!years &&
+      !!semesters &&
       (periods.morning || periods.evening || periods.afternoon)
     ) {
       if (course.name) {
@@ -88,12 +88,12 @@ function CourseForm({
           name: name,
           tag: tag,
           periods: { ...periods },
-          years: years,
+          semesters: semesters,
         });
         handleClose();
         setName("");
         setTag("");
-        setYears("");
+        setSemesters("");
         setPeriods({
           morning: false,
           afternoon: false,
@@ -105,12 +105,12 @@ function CourseForm({
           name: name,
           tag: tag,
           periods: { ...periods },
-          years: years,
+          semesters: semesters,
         });
         handleClose();
         setName("");
         setTag("");
-        setYears("");
+        setSemesters("");
         setPeriods({
           morning: false,
           afternoon: false,
@@ -152,11 +152,11 @@ function CourseForm({
           />
 
           <TextField
-            label="Duração:(Em anos)"
+            label="Duração:(Em semestres)"
             type="number"
-            value={years}
-            placeholder="5"
-            onChange={(e) => setYears(e.target.value)}
+            value={semesters}
+            placeholder="8"
+            onChange={(e) => setSemesters(e.target.value)}
             className={classes.inputText}
             variant="outlined"
           />

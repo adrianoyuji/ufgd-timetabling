@@ -48,7 +48,7 @@ function SubjectsForm({
     setShowList(true);
     setNewSubject({ ...subject_state });
     let semesterArr = [];
-    for (let i = 0; i < course.years * 2; i++) {
+    for (let i = 0; i < course.semesters; i++) {
       semesterArr.push(i + 1);
     }
     setSemesterAmount(semesterArr);

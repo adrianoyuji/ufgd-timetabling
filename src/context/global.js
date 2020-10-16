@@ -9,7 +9,7 @@ export const GlobalProvider = ({ children }) => {
       name: "Engenharia de Computação",
       tag: "EC",
       periods: { morning: true, afternoon: true, evening: false },
-      years: 5,
+      semesters: 10,
       subjects: [
         {
           id: "07008708",
@@ -507,7 +507,7 @@ export const GlobalProvider = ({ children }) => {
       name: "Sistemas de Informação",
       tag: "SI",
       periods: { morning: false, afternoon: false, evening: true },
-      years: 4,
+      semesters: 8,
       subjects: [
         {
           id: "07008717",
@@ -550,6 +550,14 @@ export const GlobalProvider = ({ children }) => {
           semester: 4,
         },
       ],
+    },
+    {
+      id: "sarv132513df",
+      name: "Sistemas de Informação 2",
+      tag: "SI2",
+      periods: { morning: false, afternoon: false, evening: true },
+      semesters: 9,
+      subjects: [],
     },
   ]);
   const [professors, setProfessors] = useState([

@@ -57,7 +57,7 @@ function CourseAccordion({
         <AccordionDetails className={classes.accordion}>
           <div className={classes.accordionDetails}>
             <Typography>
-              <b>Duração:</b> {course.years} anos
+              <b>Duração:</b> {course.semesters} semestres
             </Typography>
             <Typography>
               <b>Tag:</b> {course.tag}
