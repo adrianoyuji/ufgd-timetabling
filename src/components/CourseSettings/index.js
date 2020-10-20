@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import TableCellForm from "../TableCellForm";
+import GASettings from "../GASettings";
 
 //material UI
 import PropTypes from "prop-types";
@@ -17,6 +18,9 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
+
+//icons
+import SettingsIcon from "@material-ui/icons/Settings";
 
 //empty states
 import { years_state } from "../../data/index";
@@ -61,13 +65,20 @@ function a11yProps(index) {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
   },
   table: {
     minWidth: 650,
   },
-
+  button: {
+    margin: theme.spacing(1),
+  },
+  buttonContainer: {
+    margin: 8,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
   yearTitle: {
     paddingTop: 16,
     paddingBottom: 16,
@@ -112,11 +123,15 @@ export default function CourseSettings({
   setCourseTables,
   courseTables,
   selectedSemester,
+  handleStep,
+  config,
+  setConfig,
 }) {
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(false);
+  const [settings, setSettings] = useState(false);
   const [selectedCell, setSelectecCell] = useState({
     ...empty_cell,
   });
@@ -192,12 +207,13 @@ export default function CourseSettings({
   const createCell = (period, day, cell, index, year) => {
     return (
       <Button
+        color={!!cell.subject ? "primary" : "default"}
         onClick={() => {
           setSelectecCell({ ...cell, day, period, index, year });
           setModal(true);
         }}
       >
-        {!!cell.subject ? cell.subject : "Livre"}
+        {!!cell.subject ? <b>{cell.subject}</b> : "Livre"}
       </Button>
     );
   };
@@ -422,17 +438,47 @@ export default function CourseSettings({
             {renderTableSettings(course)}
           </TabPanel>
         ))}
-        <TableCellForm
-          open={modal}
-          handleClose={() => {
-            setModal(false);
-            setSelectecCell({
-              ...empty_cell,
-            });
-          }}
-          onChange={updateCell}
-          cell={selectedCell}
-        />
+        <div className={classes.buttonContainer}>
+          <Button
+            className={classes.button}
+            variant="contained"
+            startIcon={<SettingsIcon />}
+            onClick={() => setSettings(true)}
+          >
+            Configurações Avançadas
+          </Button>
+          <Button
+            className={classes.button}
+            color="primary"
+            variant="contained"
+            onClick={() => window.confirm("Deseja Continuar?") && handleStep(2)}
+          >
+            Avançar
+          </Button>
+        </div>
+        {
+          <TableCellForm
+            open={modal}
+            handleClose={() => {
+              setModal(false);
+              setSelectecCell({
+                ...empty_cell,
+              });
+            }}
+            onChange={updateCell}
+            cell={selectedCell}
+          />
+        }
+        {
+          <GASettings
+            open={settings}
+            handleClose={() => {
+              setSettings(false);
+            }}
+            onChange={setConfig}
+            config={config}
+          />
+        }
       </div>
     )
   );

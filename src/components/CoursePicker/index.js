@@ -141,7 +141,7 @@ function CoursePicker({
             className={classes.button}
             onClick={() => handleConfirm()}
           >
-            CONTINUAR
+            Avançar
           </Button>
         </div>
       </div>
@@ -162,6 +162,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-end",
+  },
+  button: {
+    margin: theme.spacing(1),
   },
   formControl: {
     margin: theme.spacing(1),

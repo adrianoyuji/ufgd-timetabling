@@ -4,7 +4,7 @@ import { GlobalContext } from "../../context/global";
 
 //components
 import ProfessorsModal from "../../components/ProfessorsModal";
-import ProfessorCard from "../../components/ProfessorCard";
+import ProfessorTable from "../../components/ProfessorTable";
 
 //material ui
 import Typography from "@material-ui/core/Typography";
@@ -50,7 +50,7 @@ function Professors() {
         if (prof.id !== proffessor.id) {
           return proffessor;
         } else {
-          return prof;
+          return { ...prof, active: !prof.active };
         }
       })
     );
@@ -75,15 +75,12 @@ function Professors() {
       <Divider />
       <div className={classes.professorList}>
         {!!professors ? (
-          professors.map((professor, index) => (
-            <ProfessorCard
-              key={professor.id}
-              professor={professor}
-              handleDeleteProfessor={handleDeleteProfessor}
-              handleActive={handleActive}
-              handleEditProfessor={setProfessorModal}
-            />
-          ))
+          <ProfessorTable
+            professors={professors}
+            handleDeleteProfessor={handleDeleteProfessor}
+            handleActive={handleActive}
+            handleEditProfessor={setProfessorModal}
+          />
         ) : (
           <Typography variant="h6" noWrap>
             Não há professores cadastrados

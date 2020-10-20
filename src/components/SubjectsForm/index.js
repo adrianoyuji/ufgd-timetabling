@@ -19,7 +19,7 @@ import AddIcon from "@material-ui/icons/Add";
 import CancelIcon from "@material-ui/icons/Cancel";
 
 //components
-import SubjectCard from "../SubjectCard";
+import SubjectTable from "../SubjectTable";
 
 const subject_types = ["OBR", "OPT", "ELT", "LEG"];
 const workload_options = [0, 36, 54, 72, 108];
@@ -60,7 +60,7 @@ function SubjectsForm({
       ...course,
       subjects: course.subjects.map((sub) => {
         if (sub.id === subj.id) {
-          return { ...subj };
+          return { ...subj, active: !subj.active };
         } else {
           return sub;
         }
@@ -107,23 +107,21 @@ function SubjectsForm({
           subject_types.map((type) => {
             return (
               <div className={classes.subjectType}>
-                <Typography>
-                  <b>{type}</b>
-                </Typography>
-                <Divider />
+                <div className={classes.typeHeader}>
+                  <Typography>
+                    <b>{type}</b>
+                  </Typography>
+                  <Divider />
+                </div>
+
                 <div className={classes.subjectList}>
-                  {course.subjects.map((subject) => {
-                    if (subject.type === type) {
-                      return (
-                        <SubjectCard
-                          subject={subject}
-                          key={subject.id}
-                          handleActive={handleActive}
-                          handleDeleteSubject={handleDeleteSubject}
-                        />
-                      );
-                    } else return null;
-                  })}
+                  <SubjectTable
+                    subjects={course.subjects.filter(
+                      (subject) => subject.type === type
+                    )}
+                    handleActive={handleActive}
+                    handleDeleteSubject={handleDeleteSubject}
+                  />
                 </div>
               </div>
             );
@@ -286,8 +284,8 @@ const useStyles = makeStyles((theme) => ({
   container: {
     display: "flex",
     flexDirection: "column",
-    height: window.innerHeight * 0.8,
-    width: "90vw",
+    height: window.innerHeight * 0.95,
+    width: "95vw",
     backgroundColor: "#f5f5f5",
     borderRadius: 8,
     padding: 8,
@@ -297,9 +295,14 @@ const useStyles = makeStyles((theme) => ({
   },
   subjectList: {
     display: "flex",
-    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "center",
   },
-  subjectType: { display: "flex", flexDirection: "column", flex: 1 },
+  subjectType: {
+    display: "flex",
+    flexDirection: "column",
+    flex: 1,
+  },
   heading: { flexGrow: 1 },
   modalHeader: {
     display: "flex",
@@ -336,5 +339,8 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     flexGrow: 1,
     overflowY: "scroll",
+  },
+  typeHeader: {
+    marginBottom: 16,
   },
 }));

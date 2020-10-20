@@ -6,8 +6,6 @@ import { GlobalContext } from "../../context/global";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepButton from "@material-ui/core/StepButton";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
 
 //components
 import CoursePicker from "../../components/CoursePicker";
@@ -19,6 +17,12 @@ function Solution2() {
   const [selectedCourses, setSelectedCourses] = useState([]);
   const [selectedSemester, setSelectedSemester] = useState(1);
   const [courseTables, setCourseTables] = useState([]);
+  const [config, setConfig] = useState({
+    maxPopSize: 100,
+    mutationProbability: 15,
+    crossoverProbability: 50,
+    generationLimiter: 20,
+  });
   const { courses } = useContext(GlobalContext);
 
   const handleStep = (step) => {
@@ -42,6 +46,9 @@ function Solution2() {
         selectedCourses={selectedCourses}
         setCourseTables={setCourseTables}
         courseTables={courseTables}
+        handleStep={handleStep}
+        config={config}
+        setConfig={setConfig}
       />
     ),
     2: () => "STEP 3",
