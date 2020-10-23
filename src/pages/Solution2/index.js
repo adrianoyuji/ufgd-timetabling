@@ -10,6 +10,7 @@ import StepButton from "@material-ui/core/StepButton";
 //components
 import CoursePicker from "../../components/CoursePicker";
 import CourseSettings from "../../components/CourseSettings";
+import GeneticAlgorithm from "../../components/GeneticAlgorithm";
 
 function Solution2() {
   const classes = useStyles();
@@ -51,7 +52,13 @@ function Solution2() {
         setConfig={setConfig}
       />
     ),
-    2: () => "STEP 3",
+    2: () => (
+      <GeneticAlgorithm
+        courseTables={courseTables}
+        config={config}
+        selectedSemester={selectedSemester}
+      />
+    ),
     3: () => "STEP 4",
   };
 
