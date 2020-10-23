@@ -66,8 +66,8 @@ function TableCellForm({ open, handleClose, onChange, cell }) {
             onClick={() => {
               onChange({
                 ...cell,
-                subject: subject,
-                professor: professor,
+                subject: { name: subject },
+                professor: { name: professor },
               });
               handleClose();
             }}

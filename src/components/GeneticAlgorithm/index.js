@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import _, { cond } from "lodash";
+
 import { GlobalContext } from "../../context/global";
 
 const semesterModifier = (semester) => {
@@ -29,26 +29,44 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
     return attempt;
   };
 
+  const preferenceProfessor = (professorList, course) => {
+    let priorityList = professorList.filter((professor) =>
+      professor.preferences.subjects.some((sub) => sub.name === course.name)
+    );
+    if (priorityList.length > 0) {
+      return priorityList[Math.floor(Math.random() * priorityList.length)];
+    } else {
+      return professorList[Math.floor(Math.random() * professorList.length)];
+    }
+  };
+
   const generateIndividual = (course) => {
     let availableSubjects = course.subjects.filter(
       (subject) => subject.active && subject.semester % 2 === selectedSemester
     );
-    let individual = { ...course.schedule };
+    let availableProfessors = professors.filter((professor) =>
+      professor.courses.some((tag) => tag === course.tag)
+    );
+    let individual = JSON.parse(JSON.stringify(course.schedule));
     for (let i in availableSubjects) {
       let totalwl = 0;
-      while (totalwl !== availableSubjects[i].workload) {
+      while (totalwl < availableSubjects[i].workload) {
         let period = getValidPeriod(course.periods);
         let year =
           (availableSubjects[i].semester - semesterModifier(selectedSemester)) /
           2;
         let day = days[Math.floor(Math.random() * 5)];
         let time = Math.floor(Math.random() * 4);
-        console.log(period, year, day, time);
-        console.log(individual);
-        if (!individual[year][period][day][time].subject) {
-          individual[year][period][day][time].subject =
-            availableSubjects[i].name;
+
+        if (!!individual[year][period][day][time].subject === false) {
           totalwl += 18;
+          individual[year][period][day][time].subject = {
+            ...availableSubjects[i],
+          };
+          individual[year][period][day][time].professor = preferenceProfessor(
+            availableProfessors,
+            availableSubjects[i]
+          );
         }
       }
     }
@@ -63,6 +81,7 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
           generateIndividual({ ...courseTables[currentCourse] })
         );
       }
+
       console.log(initialPopulation);
     }
   };

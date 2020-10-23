@@ -162,7 +162,7 @@ export default function CourseSettings({
   }, [selectedCourses, selectedSemester, setCourseTables]);
 
   const updateCell = (newCell) => {
-    let a = courseTables.map((course, i) => {
+    let updated = courseTables.map((course, i) => {
       if (i !== value) {
         return { ...course };
       } else {
@@ -196,8 +196,7 @@ export default function CourseSettings({
         };
       }
     });
-    console.log(a);
-    setCourseTables(a);
+    setCourseTables(updated);
   };
 
   const handleChange = (event, newValue) => {
@@ -213,7 +212,7 @@ export default function CourseSettings({
           setModal(true);
         }}
       >
-        {!!cell.subject ? <b>{cell.subject}</b> : "Livre"}
+        {!!cell.subject ? <b>{cell.subject.name}</b> : "Livre"}
       </Button>
     );
   };
