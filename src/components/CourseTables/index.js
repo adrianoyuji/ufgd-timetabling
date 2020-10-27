@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import TableCellForm from "../TableCellForm";
-import GASettings from "../GASettings";
 
 //material UI
 import PropTypes from "prop-types";
@@ -79,27 +77,16 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     justifyContent: "flex-end",
   },
+  flexColumn: {
+    margin: 8,
+    display: "flex",
+    flexDirection: "column",
+  },
   yearTitle: {
     paddingTop: 16,
     paddingBottom: 16,
   },
 }));
-
-const createSemesterArray = (semestersSize, semester) => {
-  //1 for first semester and 0 for second semester
-  let arr = [];
-  if (semester % 2 === 0) {
-    for (let i = 2; i <= semestersSize; i = i + 2) {
-      arr = [...arr, i];
-    }
-  } else {
-    for (let i = 1; i <= semestersSize; i = i + 2) {
-      arr = [...arr, i];
-    }
-  }
-
-  return arr;
-};
 
 const morning = ["07:20", "08:10", "09:15", "10:05"];
 const afternoon = ["13:20", "14:10", "15:15", "16:05"];
@@ -118,102 +105,19 @@ const renderSemesterYear = {
   5: () => "Sexto Ano",
 };
 
-export default function CourseSettings({
-  selectedCourses,
-  setCourseTables,
-  courseTables,
-  selectedSemester,
-  handleStep,
-  config,
-  setConfig,
-}) {
+export default function CourseTables({ courseTables }) {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [modal, setModal] = useState(false);
-  const [settings, setSettings] = useState(false);
-  const [selectedCell, setSelectedCell] = useState({
-    ...empty_cell,
-  });
-
-  useEffect(() => {
-    let semesters = [];
-    let semesterSchedule = [];
-    setCourseTables(
-      selectedCourses.map((course) => {
-        semesters = createSemesterArray(course.semesters, selectedSemester);
-        semesterSchedule = semesters.map((num) => {
-          let sch = {};
-          if (course.periods.morning) {
-            sch = { ...sch, morning: { ...years_state.morning } };
-          }
-          if (course.periods.afternoon) {
-            sch = { ...sch, afternoon: { ...years_state.afternoon } };
-          }
-          if (course.periods.evening) {
-            sch = { ...sch, evening: { ...years_state.evening } };
-          }
-          return sch;
-        });
-        return { ...course, schedule: semesterSchedule };
-      })
-    );
-    setLoading(false);
-  }, [selectedCourses, selectedSemester, setCourseTables]);
-
-  const updateCell = (newCell) => {
-    let updated = courseTables.map((course, i) => {
-      if (i !== value) {
-        return { ...course };
-      } else {
-        return {
-          ...course,
-          schedule: course.schedule.map((year, id) => {
-            if (id === newCell.year) {
-              return {
-                ...year,
-                [newCell.period]: {
-                  ...year[newCell.period],
-                  [newCell.day]: year[newCell.period][newCell.day].map(
-                    (day, j) => {
-                      if (j !== newCell.index) {
-                        return { ...day };
-                      } else {
-                        return {
-                          period: day.period,
-                          subject: newCell.subject,
-                          professor: newCell.professor,
-                        };
-                      }
-                    }
-                  ),
-                },
-              };
-            } else {
-              return { ...year };
-            }
-          }),
-        };
-      }
-    });
-    setCourseTables(updated);
-  };
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   const createCell = (period, day, cell, index, year) => {
     return (
-      <Button
-        color={!!cell.subject ? "primary" : "default"}
-        onClick={() => {
-          setSelectedCell({ ...cell, day, period, index, year });
-          setModal(true);
-        }}
-      >
+      <div className={classes.flexColumn}>
         {!!cell.subject ? <b>{cell.subject.name}</b> : "Livre"}
-      </Button>
+        {!!cell.professor ? cell.professor.name : null}
+      </div>
     );
   };
 
@@ -221,6 +125,7 @@ export default function CourseSettings({
     let morningRows = [];
     let afternoonRows = [];
     let eveningRows = [];
+
     if (!!schedule.morning) {
       morningRows = morning.map((time, index) => {
         return createData(
@@ -368,6 +273,7 @@ export default function CourseSettings({
   const renderTableSettings = (course) => {
     return course.schedule.map((year, index) => {
       let rows = createRows(year, index);
+
       return (
         <div key={index}>
           <Typography variant="h5" className={classes.yearTitle}>
@@ -419,64 +325,23 @@ export default function CourseSettings({
   };
 
   return (
-    loading || (
-      <div className={classes.root}>
-        <AppBar position="static">
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            aria-label="simple tabs example"
-          >
-            {courseTables.map((course, index) => (
-              <Tab label={course.name} {...a11yProps(index)} key={index} />
-            ))}
-          </Tabs>
-        </AppBar>
-        {courseTables.map((course, index) => (
-          <TabPanel value={value} index={index} key={index}>
-            {renderTableSettings(course)}
-          </TabPanel>
-        ))}
-        <div className={classes.buttonContainer}>
-          <Button
-            className={classes.button}
-            variant="contained"
-            startIcon={<SettingsIcon />}
-            onClick={() => setSettings(true)}
-          >
-            Configurações Avançadas
-          </Button>
-          <Button
-            className={classes.button}
-            color="primary"
-            variant="contained"
-            onClick={() => window.confirm("Deseja Continuar?") && handleStep(2)}
-          >
-            Avançar
-          </Button>
-        </div>
-
-        <TableCellForm
-          open={modal}
-          handleClose={() => {
-            setModal(false);
-            setSelectedCell({
-              ...empty_cell,
-            });
-          }}
-          onChange={updateCell}
-          cell={selectedCell}
-        />
-
-        <GASettings
-          open={settings}
-          handleClose={() => {
-            setSettings(false);
-          }}
-          onChange={setConfig}
-          config={config}
-        />
-      </div>
-    )
+    <div className={classes.root}>
+      <AppBar position="static">
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="simple tabs example"
+        >
+          {courseTables.map((course, index) => (
+            <Tab label={course.name} {...a11yProps(index)} key={index} />
+          ))}
+        </Tabs>
+      </AppBar>
+      {courseTables.map((course, index) => (
+        <TabPanel value={value} index={index} key={index}>
+          {renderTableSettings(course)}
+        </TabPanel>
+      ))}
+    </div>
   );
 }

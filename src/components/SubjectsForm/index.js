@@ -22,14 +22,14 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import SubjectTable from "../SubjectTable";
 
 const subject_types = ["OBR", "OPT", "ELT", "LEG"];
-const workload_options = [0, 36, 54, 72, 108];
+const workload_options = [36, 54, 72, 108];
 const subject_state = {
   id: "",
   name: "",
   type: "OBR",
-  workload: 0,
+  workload: 36,
   active: true,
-  semester: 0,
+  semester: 1,
 };
 
 function SubjectsForm({

@@ -667,7 +667,7 @@ export const GlobalProvider = ({ children }) => {
       courses: ["SI", "EC"],
     },
     {
-      name: "Janne Yukiko Yoshikawa Oeiras Lachi	",
+      name: "Janne Yukiko Yoshikawa Oeiras Lachi",
       email: "janneoeiras@ufgd.edu.br",
       id: 91,
       workload: { min: 2, max: 20 },
