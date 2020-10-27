@@ -104,7 +104,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     height: "auto",
-    width: "20vw",
+    width: "auto",
     backgroundColor: "#f5f5f5",
     borderRadius: 8,
     padding: 8,

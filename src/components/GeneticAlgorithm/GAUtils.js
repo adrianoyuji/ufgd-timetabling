@@ -4,7 +4,7 @@ export const getValidPeriod = (availablePeriods) => {
   const periods = ["morning", "afternoon", "evening"];
   while (condition === true) {
     attempt = periods[Math.floor(Math.random() * 3)];
-    if (availablePeriods[attempt]) {
+    if (!!availablePeriods[attempt]) {
       condition = false;
     }
   }
