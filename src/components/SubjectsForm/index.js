@@ -104,9 +104,9 @@ function SubjectsForm({
     return (
       <>
         {!!course.subjects ? (
-          subject_types.map((type) => {
+          subject_types.map((type, index) => {
             return (
-              <div className={classes.subjectType}>
+              <div className={classes.subjectType} key={index}>
                 <div className={classes.typeHeader}>
                   <Typography>
                     <b>{type}</b>
@@ -167,8 +167,10 @@ function SubjectsForm({
                 })
               }
             >
-              {subject_types.map((type) => (
-                <option value={type}>{type}</option>
+              {subject_types.map((type, i) => (
+                <option value={type} key={i}>
+                  {type}
+                </option>
               ))}
             </Select>
           </FormControl>
@@ -185,8 +187,10 @@ function SubjectsForm({
                 })
               }
             >
-              {workload_options.map((type) => (
-                <option value={type}>{type}</option>
+              {workload_options.map((type, i) => (
+                <option value={type} key={i}>
+                  {type}
+                </option>
               ))}
             </Select>
           </FormControl>
@@ -203,8 +207,10 @@ function SubjectsForm({
                 })
               }
             >
-              {semesterAmount.map((type) => (
-                <option value={type}>{type}</option>
+              {semesterAmount.map((type, i) => (
+                <option value={type} key={i}>
+                  {type}
+                </option>
               ))}
             </Select>
           </FormControl>

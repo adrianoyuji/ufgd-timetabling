@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 //material UI
 import PropTypes from "prop-types";
@@ -15,22 +15,6 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import Button from "@material-ui/core/Button";
-
-//icons
-import SettingsIcon from "@material-ui/icons/Settings";
-
-//empty states
-import { years_state } from "../../data/index";
-
-const empty_cell = {
-  period: "",
-  subject: null,
-  professor: null,
-  day: null,
-  index: null,
-  year: null,
-};
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

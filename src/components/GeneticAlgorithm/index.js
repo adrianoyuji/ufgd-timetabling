@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import CourseTables from "../CourseTables";
 import * as GA from "./GAUtils";
+import _ from "lodash";
 
 import { GlobalContext } from "../../context/global";
-import _ from "lodash";
 
 const days = ["mon", "tue", "wed", "thu", "fri"];
 const periods = ["morning", "afternoon", "evening"];
@@ -186,6 +186,74 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
       }
     }
 
+    //checks if subjects is in the same period and day - hard constraint
+    for (let course in individual) {
+      for (let year in individual[course]) {
+        for (let period in individual[course][year]) {
+          for (let day in days) {
+            let subjectList = [];
+            for (let cell in individual[course][year][period][days[day]]) {
+              if (!!individual[course][year][period][days[day]][cell].subject) {
+                subjectList = [
+                  ...subjectList,
+                  individual[course][year][period][days[day]][cell].subject,
+                ];
+              }
+            }
+            if (!!subjectList.length) {
+              score += GA.compareSubjects([...subjectList]);
+            }
+          }
+        }
+      }
+    }
+
+    //checks if subject has the same professor
+    for (let course in individual) {
+      for (let year in individual[course]) {
+        let subjectProfessors = {};
+        for (let period in individual[course][year]) {
+          for (let day in days) {
+            for (let cell in individual[course][year][period][days[day]]) {
+              if (
+                !!individual[course][year][period][days[day]][cell].professor
+              ) {
+                if (
+                  !subjectProfessors[
+                    individual[course][year][period][days[day]][cell].subject
+                      .name
+                  ]
+                ) {
+                  subjectProfessors = {
+                    ...subjectProfessors,
+                    [individual[course][year][period][days[day]][cell].subject
+                      .name]: [
+                      individual[course][year][period][days[day]][cell]
+                        .professor.name,
+                    ],
+                  };
+                } else {
+                  subjectProfessors = {
+                    ...subjectProfessors,
+                    [individual[course][year][period][days[day]][cell].subject
+                      .name]: [
+                      ...subjectProfessors[
+                        individual[course][year][period][days[day]][cell]
+                          .subject.name
+                      ],
+                      individual[course][year][period][days[day]][cell]
+                        .professor.name,
+                    ],
+                  };
+                }
+              }
+            }
+          }
+        }
+        score += GA.compareProfessorSubject({ ...subjectProfessors });
+      }
+    }
+
     return { score: score };
   };
 
@@ -257,6 +325,8 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
       }
 
       // randomlychanges a cell location
+      //TODO MAKE IT CHANGE SUBJECT TO SUBJECT LOCATION
+      //TODO RING CELL CHANGE
       for (let i in children) {
         for (let j in children[i]) {
           let mutated = false;
@@ -401,8 +471,12 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
     for (let i in population) {
       population[i].push(fitness(population[i]));
     }
-    let firstGen = [...population];
+    //let firstGen = [...population];
 
+    let bestIndividual = [{ score: -1000 }];
+    let bestScoreOfPrevPops = [];
+
+    //start of the generation crossing
     for (let gen = 0; gen < config.generationLimiter; gen++) {
       let newpopulation = [];
       for (let i = 0; i < config.maxPopSize / 2; i++) {
@@ -414,17 +488,26 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
         newpopulation = [...newpopulation, ...children];
       }
       population = [...newpopulation];
+      let currentBestIndividual = _.maxBy(
+        population,
+        (individual) => individual[individual.length - 1].score
+      );
+      bestScoreOfPrevPops = [
+        ...bestScoreOfPrevPops,
+        currentBestIndividual[currentBestIndividual.length - 1],
+      ];
+      if (
+        currentBestIndividual[currentBestIndividual.length - 1].score >=
+        bestIndividual[bestIndividual.length - 1].score
+      ) {
+        bestIndividual = [...currentBestIndividual];
+      }
     }
-    let bestIndividual = _.maxBy(
-      population,
-      (individual) => individual[individual.length - 1].score
-    );
 
     let result = courseTables.map((course, index) => ({
       ...course,
       schedule: bestIndividual[index],
     }));
-    console.log(bestIndividual[bestIndividual.length]);
     setNewTables(result);
   };
 

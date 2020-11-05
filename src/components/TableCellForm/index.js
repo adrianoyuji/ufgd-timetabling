@@ -15,8 +15,8 @@ function TableCellForm({ open, handleClose, onChange, cell }) {
   const [professor, setProfessor] = useState("");
 
   useEffect(() => {
-    setSubject(!!cell.subject ? cell.subject : "");
-    setProfessor(!!cell.professor ? cell.professor : "");
+    setSubject(!!cell.subject ? cell.subject.name : "");
+    setProfessor(!!cell.professor ? cell.professor.name : "");
   }, [cell]);
 
   return (
