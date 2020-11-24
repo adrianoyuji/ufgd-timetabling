@@ -62,7 +62,7 @@ export const compareSubjects = (arrOfNames) => {
       }
     }
   }
-  return total * 2;
+  return total * 1.25;
 };
 
 export const compareProfessorSubject = (array) => {

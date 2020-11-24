@@ -381,7 +381,10 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
 
   const crossover = (parents) => {
     let insertedSubjects = {};
+    let courseSubjects = [];
     let counter = 0;
+    let insertedProfessors = {};
+    let courseProfessors = [];
     if (config.crossoverProbability - Math.floor(Math.random() * 101) >= 0) {
       let taggedParents = JSON.parse(JSON.stringify(parents));
 
@@ -401,12 +404,57 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
                     [taggedParents[0][course][year][period][day][cell].subject
                       .name]: [],
                   };
+                  insertedProfessors = {
+                    ...insertedProfessors,
+                    [taggedParents[0][course][year][period][day][cell].subject
+                      .name]: "",
+                  };
+                }
+              }
+            }
+          }
+        }
+        courseSubjects = [...courseSubjects, { ...insertedSubjects }];
+        courseProfessors = [...courseProfessors, { ...insertedProfessors }];
+        insertedProfessors = {};
+        insertedSubjects = {};
+      }
+
+      courseProfessors = [
+        JSON.parse(JSON.stringify(courseProfessors)),
+        JSON.parse(JSON.stringify(courseProfessors)),
+      ];
+
+      //map the professors
+      for (let child in taggedParents) {
+        for (let course in taggedParents[child]) {
+          for (let year in taggedParents[child][course]) {
+            for (let period in taggedParents[child][course][year]) {
+              for (let day in taggedParents[child][course][year][period]) {
+                for (let cell in taggedParents[child][course][year][period][
+                  day
+                ]) {
+                  let subject =
+                    taggedParents[child][course][year][period][day][cell]
+                      .subject;
+                  let professor =
+                    taggedParents[child][course][year][period][day][cell]
+                      .professor;
+                  if (
+                    subject !== null &&
+                    courseProfessors[child][course][subject.name] === ""
+                  ) {
+                    courseProfessors[child][course][subject.name] =
+                      professor.name;
+                  }
                 }
               }
             }
           }
         }
       }
+
+      //console.log("list all subjects ok");
       //MAP THE INDIVIDUALS
       for (let course in taggedParents[0]) {
         for (let year in taggedParents[0][course]) {
@@ -422,7 +470,7 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
                 if (
                   !!taggedParents[0][course][year][period][day][cell].subject
                 ) {
-                  insertedSubjects[
+                  courseSubjects[course][
                     taggedParents[0][course][year][period][day][cell].subject
                       .name
                   ].push(counter);
@@ -445,7 +493,7 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
                 if (
                   !!taggedParents[1][course][year][period][day][cell].subject
                 ) {
-                  let cellKey = insertedSubjects[
+                  let cellKey = courseSubjects[course][
                     taggedParents[1][course][year][period][day][cell].subject
                       .name
                   ].pop();
@@ -470,6 +518,9 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
           }
         }
       }
+
+      //console.log("mapping ok");
+
       //fixing duple indexes
       for (let course in taggedParents[1]) {
         for (let year in taggedParents[1][course]) {
@@ -499,6 +550,8 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
         }
       }
 
+      //console.log("fixing duples ok");
+
       taggedParents = JSON.parse(JSON.stringify(taggedParents));
 
       //RANDOMIZE CROSSOVER POINTS
@@ -508,7 +561,7 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
         point1 = Math.floor(Math.random() * 4);
         point2 = Math.floor(Math.random() * 5);
       }
-
+      //console.log("generate points ok");
       //CROSSOVER POINTS
       for (let course in taggedParents[0]) {
         for (let year in taggedParents[0][course]) {
@@ -529,6 +582,8 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
           }
         }
       }
+
+      //console.log("crossover childs ok");
       let keyTable1 = [];
       let keyTable2 = [];
       //generate key table
@@ -563,7 +618,7 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
         keyTable1.push(auxKT1);
         keyTable2.push(auxKT2);
       }
-
+      //console.log("keytables ok");
       let keysTable = [[...keyTable1], [...keyTable2]];
 
       //MAPPING LEGALIZATION REFS
@@ -602,6 +657,7 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
         DNASample2.push(courseAux2);
       }
       let dnas = [[...DNASample2], [...DNASample1]];
+      //console.log("dnas ok");
 
       //CHILDREN LEGALIZATION
       for (let child in taggedParents) {
@@ -614,7 +670,9 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
                     day
                   ]) {
                     let duplicated = true;
-                    while (duplicated) {
+                    let antiLoop = -1;
+                    while (duplicated && antiLoop < 10) {
+                      antiLoop++;
                       let key =
                         taggedParents[child][course][year][period][day][cell]
                           .key;
@@ -652,6 +710,37 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
                         duplicated = false;
                       }
                     }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      //correcting the professors
+      for (let child in taggedParents) {
+        for (let course in taggedParents[child]) {
+          for (let year in taggedParents[child][course]) {
+            for (let period in taggedParents[child][course][year]) {
+              for (let day in taggedParents[child][course][year][period]) {
+                for (let cell in taggedParents[child][course][year][period][
+                  day
+                ]) {
+                  let subject =
+                    taggedParents[child][course][year][period][day][cell]
+                      .subject;
+
+                  if (!!subject) {
+                    taggedParents[child][course][year][period][day][
+                      cell
+                    ].professor = JSON.parse(
+                      JSON.stringify({
+                        ...taggedParents[child][course][year][period][day][cell]
+                          .professor,
+                        name: courseProfessors[child][course][subject.name],
+                      })
+                    );
                   }
                 }
               }
@@ -711,13 +800,17 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
 
     //start of the generation crossing
     for (let gen = 0; gen < config.generationLimiter; gen++) {
+      //console.log(gen);
       let newpopulation = [];
       for (let i = 0; i < config.maxPopSize / 2; i++) {
         let parents = [
           tournamentSelection(population),
           tournamentSelection(population),
         ];
+        //console.log("selection ok");
         let children = crossover(parents);
+        //console.log("crossover ok");
+
         newpopulation = [...newpopulation, ...children];
       }
       population = [...newpopulation];
