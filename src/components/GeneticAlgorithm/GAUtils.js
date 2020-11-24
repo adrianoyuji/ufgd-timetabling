@@ -82,8 +82,36 @@ export const compareProfessorSubject = (array) => {
       }
     }
   }
-  if (total > 0) {
-    console.log(array);
-  }
+
   return total;
+};
+
+export const searchForKey = (child, key) => {
+  for (let year in child) {
+    for (let period in child[year]) {
+      for (let day in child[year][period]) {
+        for (let cell in child[year][period][day]) {
+          if (child[year][period][day][cell].key === key) {
+            return child[year][period][day][cell];
+          }
+        }
+      }
+    }
+  }
+  return null;
+};
+
+export const searchDuplicatedKey = (child, key) => {
+  for (let year in child) {
+    for (let period in child[year]) {
+      for (let day in child[year][period]) {
+        for (let cell in child[year][period][day]) {
+          if (child[year][period][day][cell].key === key) {
+            return true;
+          }
+        }
+      }
+    }
+  }
+  return false;
 };

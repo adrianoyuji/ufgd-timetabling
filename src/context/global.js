@@ -1,5 +1,4 @@
 import React, { createContext, useState } from "react";
-import { subjectsDB } from "../data/index";
 
 export const GlobalContext = createContext([]);
 
@@ -873,8 +872,6 @@ export const GlobalProvider = ({ children }) => {
     },
   ]);
 
-  const subjects = subjectsDB.filter((subject) => subject.active);
-
   function updateCourses(data) {
     setCourses([...data]);
   }
@@ -885,7 +882,7 @@ export const GlobalProvider = ({ children }) => {
 
   return (
     <GlobalContext.Provider
-      value={{ professors, subjects, courses, updateCourses, updateProfessors }}
+      value={{ professors, courses, updateCourses, updateProfessors }}
     >
       {children}
     </GlobalContext.Provider>

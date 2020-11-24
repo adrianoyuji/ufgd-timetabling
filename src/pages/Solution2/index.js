@@ -19,10 +19,10 @@ function Solution2() {
   const [selectedSemester, setSelectedSemester] = useState(1);
   const [courseTables, setCourseTables] = useState([]);
   const [config, setConfig] = useState({
-    maxPopSize: 50,
-    mutationProbability: 15,
-    crossoverProbability: 100,
-    generationLimiter: 10,
+    maxPopSize: 100,
+    mutationProbability: 20,
+    crossoverProbability: 85,
+    generationLimiter: 100,
   });
   const { courses } = useContext(GlobalContext);
 
