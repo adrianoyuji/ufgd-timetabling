@@ -84,11 +84,12 @@ function CourseForm({
     ) {
       if (course.name) {
         handleEditCourse({
-          id: course.id,
+          _id: course._id,
           name: name,
           tag: tag,
           periods: { ...periods },
           semesters: semesters,
+          subjects: [...course.subjects],
         });
         handleClose();
         setName("");
@@ -101,7 +102,6 @@ function CourseForm({
         });
       } else {
         handleSaveCourse({
-          id: Math.floor(Math.random() * (999999 + 1)).toString(),
           name: name,
           tag: tag,
           periods: { ...periods },
@@ -145,6 +145,7 @@ function CourseForm({
           <TextField
             label="Tag"
             value={tag}
+            disabled={!!course.name}
             placeholder="EC"
             onChange={(e) => setTag(e.target.value.toUpperCase())}
             className={classes.inputText}

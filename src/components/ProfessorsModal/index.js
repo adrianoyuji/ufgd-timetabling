@@ -26,7 +26,7 @@ import RotateLeftIcon from "@material-ui/icons/RotateLeft";
 const professor_state = {
   name: "",
   email: "",
-  id: "",
+  code: "",
   workload: { min: 8, max: 20 },
   preferences: { schedule: {}, subjects: [] },
   active: true,
@@ -173,7 +173,7 @@ function ProfessorsModal({
     if (
       !!professorState.name &&
       !!professorState.email &&
-      !!professorState.id
+      !!professorState.code
     ) {
       if (!!professor.name) {
         handleEditProfessor({ ...professorState });
@@ -208,10 +208,10 @@ function ProfessorsModal({
             disabled={!!professor.name ? true : false}
             type="number"
             label="Código do professor(a)"
-            value={professorState.id}
+            value={professorState.code}
             placeholder="07008974"
             onChange={(e) =>
-              setProfessorState({ ...professorState, id: e.target.value })
+              setProfessorState({ ...professorState, code: e.target.value })
             }
             className={classes.inputText}
           />

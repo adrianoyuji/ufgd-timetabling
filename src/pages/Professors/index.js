@@ -14,7 +14,13 @@ import Divider from "@material-ui/core/Divider";
 
 function Professors() {
   const classes = useStyles();
-  const { professors, updateProfessors, courses } = useContext(GlobalContext);
+  const {
+    professors,
+    updateProfessors,
+    courses,
+    addProfessor,
+    deleteProfessor,
+  } = useContext(GlobalContext);
   const [professorModal, setProfessorModal] = useState(null);
   const [tags, setTags] = useState([]);
 
@@ -23,24 +29,14 @@ function Professors() {
   }, [courses]);
 
   const handleAddProfessor = (professorData) => {
-    updateProfessors([...professors, professorData]);
+    addProfessor(professorData);
   };
 
   const handleDeleteProfessor = (prof) => {
-    updateProfessors(
-      professors.filter((proffessor) => proffessor.id !== prof.id)
-    );
+    deleteProfessor(prof);
   };
   const handleEditProfessor = (prof) => {
-    updateProfessors(
-      professors.map((proffessor) => {
-        if (prof.id !== proffessor.id) {
-          return proffessor;
-        } else {
-          return prof;
-        }
-      })
-    );
+    updateProfessors(prof);
   };
 
   const handleActive = (prof) => {

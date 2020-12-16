@@ -91,7 +91,7 @@ function ProfessorTable({
                 />
               </TableCell>
               <TableCell align="left">
-                <b>{professor.id}</b>
+                <b>{professor.code}</b>
               </TableCell>
               <TableCell align="left">{professor.name}</TableCell>
               <TableCell align="left">{professor.email}</TableCell>

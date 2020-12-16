@@ -15,15 +15,20 @@ import Divider from "@material-ui/core/Divider";
 
 function Courses() {
   const classes = useStyles();
-  const { courses, updateCourses, updateProfessors, professors } = useContext(
-    GlobalContext
-  );
+  const {
+    courses,
+    updateCourses,
+    updateProfessors,
+    professors,
+    deleteCourse,
+    addCourses,
+  } = useContext(GlobalContext);
   const [courseModal, setCourseModal] = useState(null);
   const [subjectModal, setSubjectModal] = useState(null);
 
   const handleDeleteCourse = (data) => {
     //remove curso
-    updateCourses(courses.filter((item) => item.id !== data.id));
+    deleteCourse(data.tag);
 
     //remove curso de professores
     let index = 0;
@@ -44,31 +49,15 @@ function Courses() {
   };
 
   const handleSaveCourse = (form) => {
-    updateCourses([...courses, { ...form }]);
+    addCourses({ ...form });
   };
 
   const handleEditCourse = (form) => {
-    updateCourses(
-      courses.map((course) => {
-        if (course.id === form.id) {
-          return { ...form };
-        } else {
-          return course;
-        }
-      })
-    );
+    updateCourses(form);
   };
 
   const handleSubjectChange = (form) => {
-    updateCourses(
-      courses.map((course) => {
-        if (course.id === form.id) {
-          return { ...form };
-        } else {
-          return course;
-        }
-      })
-    );
+    updateCourses(form);
   };
 
   return (
@@ -89,7 +78,7 @@ function Courses() {
       </div>
       <Divider />
       <div className={classes.courseList}>
-        {!!courses ? (
+        {!!courses.length ? (
           courses.map((course, index) => (
             <CourseAccordion
               course={course}
