@@ -41,15 +41,7 @@ function Professors() {
 
   const handleActive = (prof) => {
     //changes active state of subject
-    updateProfessors(
-      professors.map((proffessor) => {
-        if (prof.id !== proffessor.id) {
-          return proffessor;
-        } else {
-          return { ...prof, active: !prof.active };
-        }
-      })
-    );
+    updateProfessors({ ...prof, active: !prof.active });
   };
 
   return (

@@ -22,6 +22,7 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
 
   const fitness = (individual) => {
     let score = 0;
+    let penalties = {};
     //verifies if a professor is teaching in different years at the same time. - hard constraint
     for (let period in periods) {
       for (let day in days) {
@@ -42,7 +43,17 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
             }
           }
           if (!!professorList.length) {
-            score += GA.compareNames([...professorList]);
+            let value = GA.compareNames([...professorList]);
+            score += value;
+            if (value < 0) {
+              penalties = {
+                ...penalties,
+                teacherConflict: {
+                  text: "Um professor está dando aula no mesmo horário",
+                  deductedScore: value,
+                },
+              };
+            }
           }
         }
       }
@@ -80,7 +91,12 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
                   if (!!preference) {
                     switch (preference.status) {
                       case "UNAVAILABLE":
-                        score = score - 10;
+                        penalties = {
+                          ...penalties,
+                          teacherPreference:
+                            "Um professor está alocado em um horário de indisponibilidade",
+                        };
+                        score = score - 50;
                         break;
                       case "PREFERENCE":
                         score = score + 5;
@@ -139,6 +155,10 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
     for (let name in professorWorkload) {
       if (professorWorkload[name] > 20 || professorWorkload[name] < 1) {
         score -= 10;
+        penalties = {
+          ...penalties,
+          professorWorkload: "Um professor está com CH inválida",
+        };
       }
     }
 
@@ -185,8 +205,12 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
         }
         for (let name in subjectWorkload) {
           let sub = availableSubjects.find((subject) => subject.name === name);
-          if (!!sub && subjectWorkload[name] !== sub.workload) {
+          if (!!sub && subjectWorkload[name] !== Number(sub.workload)) {
             score -= 10;
+            penalties = {
+              ...penalties,
+              subjectWorkload: "Uma matéria esta com CH inválida.",
+            };
           }
         }
       }
@@ -207,7 +231,14 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
               }
             }
             if (!!subjectList.length) {
-              score += GA.compareSubjects([...subjectList]);
+              let value = GA.compareSubjects([...subjectList]);
+              score += value;
+              if (value < 0) {
+                penalties = {
+                  ...penalties,
+                  subjectAligned: "Uma matéria está com carga diária incorreta",
+                };
+              }
             }
           }
         }
@@ -260,7 +291,7 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
       }
     } */
 
-    return { score: score };
+    return { score: score, penalties };
   };
 
   const generateIndividual = (course) => {
@@ -301,75 +332,166 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
 
   const mutation = (arr) => {
     let children = JSON.parse(JSON.stringify(arr));
-    if (config.mutationProbability / 2 - Math.floor(Math.random() * 101) >= 0) {
-      // randomlychanges a cell location
-      //TODO MAKE IT CHANGE SUBJECT TO SUBJECT LOCATION
-      //TODO RING CELL CHANGE
-      for (let i in children) {
-        for (let j in children[i]) {
-          let randomYear = Math.floor(Math.random() * children[i][j].length);
-          let randomPeriod = GA.getValidPeriod(courseTables[j].periods);
-          let randomDay = days[Math.floor(Math.random() * 5)];
-          let randomTime = Math.floor(Math.random() * 4);
+    if (config.mutationProbability - Math.floor(Math.random() * 101) >= 0) {
+      if (Math.floor(Math.random() * 9)) {
+        // randomlychanges a cell location
+        for (let i in children) {
+          for (let j in children[i]) {
+            let randomYear = Math.floor(Math.random() * children[i][j].length);
+            let randomPeriod = GA.getValidPeriod(courseTables[j].periods);
+            let randomDay = days[Math.floor(Math.random() * 5)];
+            let randomTime = Math.floor(Math.random() * 4);
 
-          let auxSubject = JSON.parse(
-            JSON.stringify(
-              !!children[i][j][randomYear][randomPeriod][randomDay][randomTime]
-                .subject
-                ? children[i][j][randomYear][randomPeriod][randomDay][
-                    randomTime
-                  ].subject
-                : null
-            )
-          );
-          let auxProfessor = JSON.parse(
-            JSON.stringify(
-              !!children[i][j][randomYear][randomPeriod][randomDay][randomTime]
-                .professor
-                ? children[i][j][randomYear][randomPeriod][randomDay][
-                    randomTime
-                  ].professor
-                : null
-            )
-          );
+            let auxSubject = JSON.parse(
+              JSON.stringify(
+                !!children[i][j][randomYear][randomPeriod][randomDay][
+                  randomTime
+                ].subject
+                  ? children[i][j][randomYear][randomPeriod][randomDay][
+                      randomTime
+                    ].subject
+                  : null
+              )
+            );
+            let auxProfessor = JSON.parse(
+              JSON.stringify(
+                !!children[i][j][randomYear][randomPeriod][randomDay][
+                  randomTime
+                ].professor
+                  ? children[i][j][randomYear][randomPeriod][randomDay][
+                      randomTime
+                    ].professor
+                  : null
+              )
+            );
 
-          let randomPeriod2 = GA.getValidPeriod(courseTables[j].periods);
-          let randomDay2 = days[Math.floor(Math.random() * 5)];
-          let randomTime2 = Math.floor(Math.random() * 4);
+            let randomPeriod2 = GA.getValidPeriod(courseTables[j].periods);
+            let randomDay2 = days[Math.floor(Math.random() * 5)];
+            let randomTime2 = Math.floor(Math.random() * 4);
 
-          children[i][j][randomYear][randomPeriod][randomDay][
-            randomTime
-          ].subject = JSON.parse(
-            JSON.stringify(
-              !!children[i][j][randomYear][randomPeriod2][randomDay2][
-                randomTime2
-              ].subject
-                ? children[i][j][randomYear][randomPeriod2][randomDay2][
-                    randomTime2
-                  ].subject
-                : null
-            )
-          );
-          children[i][j][randomYear][randomPeriod][randomDay][
-            randomTime
-          ].professor = JSON.parse(
-            JSON.stringify(
-              !!children[i][j][randomYear][randomPeriod2][randomDay2][
-                randomTime2
-              ].professor
-                ? children[i][j][randomYear][randomPeriod2][randomDay2][
-                    randomTime2
-                  ].professor
-                : null
-            )
-          );
+            children[i][j][randomYear][randomPeriod][randomDay][
+              randomTime
+            ].subject = JSON.parse(
+              JSON.stringify(
+                !!children[i][j][randomYear][randomPeriod2][randomDay2][
+                  randomTime2
+                ].subject
+                  ? children[i][j][randomYear][randomPeriod2][randomDay2][
+                      randomTime2
+                    ].subject
+                  : null
+              )
+            );
+            children[i][j][randomYear][randomPeriod][randomDay][
+              randomTime
+            ].professor = JSON.parse(
+              JSON.stringify(
+                !!children[i][j][randomYear][randomPeriod2][randomDay2][
+                  randomTime2
+                ].professor
+                  ? children[i][j][randomYear][randomPeriod2][randomDay2][
+                      randomTime2
+                    ].professor
+                  : null
+              )
+            );
 
-          children[i][j][randomYear][randomPeriod2][randomDay2][
-            randomTime2
-          ].professor = auxProfessor;
-          children[i][j][randomYear][randomPeriod2][randomDay2][
-            randomTime2
-          ].subject = auxSubject;
+            children[i][j][randomYear][randomPeriod2][randomDay2][
+              randomTime2
+            ].professor = auxProfessor;
+            children[i][j][randomYear][randomPeriod2][randomDay2][
+              randomTime2
+            ].subject = auxSubject;
+          }
+        }
+      } else {
+        for (let i in children) {
+          for (let j in children[i]) {
+            let foundYear = false;
+            let foundPeriod = false;
+            let foundDay = false;
+            let foundCell = false;
+            let foundSubject = [];
+            for (let year in children[i][j]) {
+              for (let period in children[i][j][year]) {
+                for (let day in children[i][j][year][period]) {
+                  let subjectsOfDayList = [];
+                  let mostFrequent = false;
+                  for (let cell in children[i][j][year][period][day]) {
+                    if (children[i][j][year][period][day][cell]) {
+                      subjectsOfDayList.push(
+                        children[i][j][year][period][day][cell].subject
+                      );
+                    }
+                  }
+                  mostFrequent = GA.findMostFrequentSubject(subjectsOfDayList);
+
+                  if (mostFrequent && mostFrequent[1] === 3) {
+                    foundYear = year;
+                    foundPeriod = period;
+                    foundDay = day;
+                    foundSubject = [...mostFrequent];
+                  }
+                }
+              }
+            }
+            if (foundSubject.length > 0) {
+              let keys = [];
+
+              for (let cell in children[i][j][foundYear][foundPeriod][
+                foundDay
+              ]) {
+                if (
+                  children[i][j][foundYear][foundPeriod][foundDay][cell]
+                    .subject &&
+                  children[i][j][foundYear][foundPeriod][foundDay][cell].subject
+                    .name === foundSubject[0]
+                ) {
+                  keys = [
+                    ...keys,
+                    children[i][j][foundYear][foundPeriod][foundDay][cell].key,
+                  ];
+                } else {
+                  foundCell = cell;
+                }
+              }
+
+              for (let year in children[i][j]) {
+                for (let period in children[i][j][year]) {
+                  for (let day in children[i][j][year][period]) {
+                    for (let cell in children[i][j][year][period][day]) {
+                      if (
+                        children[i][j][year][period][day][cell].subject &&
+                        children[i][j][year][period][day][cell].subject.name ===
+                          foundSubject[0] &&
+                        !keys.includes(
+                          children[i][j][year][period][day][cell].key
+                        )
+                      ) {
+                        let auxCell = JSON.parse(
+                          JSON.stringify(
+                            children[i][j][year][period][day][cell]
+                          )
+                        );
+
+                        children[i][j][year][period][day][cell] = JSON.parse(
+                          JSON.stringify(
+                            children[i][j][foundYear][foundPeriod][foundDay][
+                              foundCell
+                            ]
+                          )
+                        );
+
+                        children[i][j][foundYear][foundPeriod][foundDay][
+                          foundCell
+                        ] = JSON.parse(JSON.stringify(auxCell));
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
 
@@ -485,6 +607,7 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
       let filledIndex = {};
       counter = 0;
       //maps second child and creates an array with child 1 equal indexes
+
       for (let course in taggedParents[1]) {
         for (let year in taggedParents[1][course]) {
           for (let period in taggedParents[1][course][year]) {
@@ -493,15 +616,22 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
                 if (
                   !!taggedParents[1][course][year][period][day][cell].subject
                 ) {
-                  let cellKey = courseSubjects[course][
-                    taggedParents[1][course][year][period][day][cell].subject
-                      .name
-                  ].pop();
-                  taggedParents[1][course][year][period][day][cell] = {
-                    ...taggedParents[1][course][year][period][day][cell],
-                    key: cellKey,
-                  };
-                  filledIndex = { ...filledIndex, [cellKey]: counter };
+                  if (
+                    !!courseSubjects[course][
+                      taggedParents[1][course][year][period][day][cell].subject
+                        .name
+                    ]
+                  ) {
+                    let cellKey = courseSubjects[course][
+                      taggedParents[1][course][year][period][day][cell].subject
+                        .name
+                    ].pop();
+                    taggedParents[1][course][year][period][day][cell] = {
+                      ...taggedParents[1][course][year][period][day][cell],
+                      key: cellKey,
+                    };
+                    filledIndex = { ...filledIndex, [cellKey]: counter };
+                  }
                 } else {
                   taggedParents[1][course][year][period][day][
                     cell
@@ -519,9 +649,8 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
         }
       }
 
-      //console.log("mapping ok");
-
       //fixing duple indexes
+      //TODO CHECK AGAIN
       for (let course in taggedParents[1]) {
         for (let year in taggedParents[1][course]) {
           for (let period in taggedParents[1][course][year]) {
@@ -658,7 +787,7 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
       }
       let dnas = [[...DNASample2], [...DNASample1]];
       //console.log("dnas ok");
-
+      //console.log(keysTable);
       //CHILDREN LEGALIZATION
       for (let child in taggedParents) {
         for (let course in taggedParents[child]) {
@@ -670,19 +799,28 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
                     day
                   ]) {
                     let duplicated = true;
-                    let antiLoop = -1;
-                    while (duplicated && antiLoop < 10) {
-                      antiLoop++;
+                    let firstKey =
+                      taggedParents[child][course][year][period][day][cell].key;
+                    while (duplicated) {
                       let key =
                         taggedParents[child][course][year][period][day][cell]
                           .key;
                       let nextKey = keysTable[child][course][key];
 
                       if (!!nextKey) {
-                        let newCell = GA.searchForKey(
-                          dnas[child][course],
-                          nextKey
-                        );
+                        let newCell;
+                        if (nextKey === firstKey) {
+                          newCell = GA.searchForKey(
+                            taggedParents[child][course],
+                            firstKey
+                          );
+                          duplicated = false;
+                        } else {
+                          newCell = GA.searchForKey(
+                            dnas[child][course],
+                            nextKey
+                          );
+                        }
 
                         if (!!newCell) {
                           taggedParents[child][course][year][period][day][
@@ -699,10 +837,10 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
                             cell
                           ].key = JSON.parse(JSON.stringify(newCell.key));
 
-                          duplicated = GA.searchDuplicatedKey(
+                          /* duplicated = GA.searchDuplicatedKey(
                             dnas[child][course],
                             nextKey
-                          );
+                          ); */
                         } else {
                           duplicated = false;
                         }
@@ -763,12 +901,16 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
       population[Math.floor(Math.random() * config.maxPopSize)],
       population[Math.floor(Math.random() * config.maxPopSize)],
       population[Math.floor(Math.random() * config.maxPopSize)],
+      population[Math.floor(Math.random() * config.maxPopSize)],
+      population[Math.floor(Math.random() * config.maxPopSize)],
     ];
 
     let maxScore = Math.max(
       individuals[0][individuals[0].length - 1].score,
       individuals[1][individuals[1].length - 1].score,
-      individuals[2][individuals[2].length - 1].score
+      individuals[2][individuals[2].length - 1].score,
+      individuals[3][individuals[3].length - 1].score,
+      individuals[4][individuals[4].length - 1].score
     );
     return individuals.find(
       (individual) => individual[individual.length - 1].score === maxScore
@@ -797,19 +939,17 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
 
     let bestIndividual = [{ score: -1000 }];
     let bestScoreOfPrevPops = [];
-
+    let bestIndiviualOfEachGeneration = [];
     //start of the generation crossing
     for (let gen = 0; gen < config.generationLimiter; gen++) {
-      //console.log(gen);
+      console.log("generating generation " + gen);
       let newpopulation = [];
       for (let i = 0; i < config.maxPopSize / 2; i++) {
         let parents = [
           tournamentSelection(population),
           tournamentSelection(population),
         ];
-        //console.log("selection ok");
         let children = crossover(parents);
-        //console.log("crossover ok");
 
         newpopulation = [...newpopulation, ...children];
       }
@@ -822,6 +962,7 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
         ...bestScoreOfPrevPops,
         currentBestIndividual[currentBestIndividual.length - 1],
       ];
+      bestIndiviualOfEachGeneration.push(currentBestIndividual);
       if (
         currentBestIndividual[currentBestIndividual.length - 1].score >
         bestIndividual[bestIndividual.length - 1].score
@@ -829,7 +970,7 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
         bestIndividual = [...currentBestIndividual];
       }
     }
-    console.log(bestScoreOfPrevPops);
+    console.log(bestIndiviualOfEachGeneration);
     console.log(bestIndividual);
     let result = courseTables.map((course, index) => ({
       ...course,

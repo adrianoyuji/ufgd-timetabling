@@ -18,7 +18,7 @@ import Login from "../../pages/Login";
 
 function App() {
   const classes = useStyles();
-  const [screen, setScreen] = useState("professors");
+  const [screen, setScreen] = useState("generateSolution");
 
   const HeaderTitle = {
     home: "Home",

@@ -115,3 +115,35 @@ export const searchDuplicatedKey = (child, key) => {
   }
   return false;
 };
+
+export const findMostFrequentSubject = (array) => {
+  let occurances = {};
+
+  for (let i in array) {
+    if (array[i]) {
+      if (!!occurances[array[i].name]) {
+        occurances = {
+          ...occurances,
+          [array[i].name]: occurances[array[i].name] + 1,
+        };
+      } else {
+        occurances = { ...occurances, [array[i].name]: 1 };
+      }
+    }
+  }
+
+  for (let key in occurances) {
+    if (occurances[key] === 4) {
+      return [key, occurances[key]];
+    }
+    if (occurances[key] === 3) {
+      return [key, occurances[key]];
+    }
+    if (occurances[key] === 2) {
+      return [key, occurances[key]];
+    }
+  }
+  for (let key in occurances) {
+    return [key, occurances[key]];
+  }
+};

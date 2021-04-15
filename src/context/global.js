@@ -91,7 +91,7 @@ export const GlobalProvider = ({ children }) => {
       });
       setProfessors([...professors, response.data.data]);
     } catch (err) {
-      console.log(err);
+      console.log(err.message);
     }
   }
 
