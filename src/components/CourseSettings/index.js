@@ -132,6 +132,7 @@ export default function CourseSettings({
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(false);
   const [settings, setSettings] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState(null);
   const [selectedCell, setSelectedCell] = useState({
     ...empty_cell,
   });
@@ -203,13 +204,14 @@ export default function CourseSettings({
     setValue(newValue);
   };
 
-  const createCell = (period, day, cell, index, year) => {
+  const createCell = (period, day, cell, index, year, course) => {
     return (
       <Button
         color={!!cell.subject ? "primary" : "default"}
         onClick={() => {
-          setSelectedCell({ ...cell, day, period, index, year });
           setModal(true);
+          setSelectedCell({ ...cell, day, period, index, year });
+          setSelectedCourse(course);
         }}
       >
         {!!cell.subject ? <b>{cell.subject.name}</b> : "Livre"}
@@ -217,7 +219,7 @@ export default function CourseSettings({
     );
   };
 
-  const createRows = (schedule, year) => {
+  const createRows = (schedule, year, course) => {
     let morningRows = [];
     let afternoonRows = [];
     let eveningRows = [];
@@ -231,7 +233,8 @@ export default function CourseSettings({
               "mon",
               schedule.morning.mon[index],
               index,
-              year
+              year,
+              course
             ),
           () =>
             createCell(
@@ -239,7 +242,8 @@ export default function CourseSettings({
               "tue",
               schedule.morning.tue[index],
               index,
-              year
+              year,
+              course
             ),
           () =>
             createCell(
@@ -247,7 +251,8 @@ export default function CourseSettings({
               "wed",
               schedule.morning.wed[index],
               index,
-              year
+              year,
+              course
             ),
           () =>
             createCell(
@@ -255,7 +260,8 @@ export default function CourseSettings({
               "thu",
               schedule.morning.thu[index],
               index,
-              year
+              year,
+              course
             ),
           () =>
             createCell(
@@ -263,7 +269,8 @@ export default function CourseSettings({
               "fri",
               schedule.morning.fri[index],
               index,
-              year
+              year,
+              course
             )
         );
       });
@@ -278,7 +285,8 @@ export default function CourseSettings({
               "mon",
               schedule.afternoon.mon[index],
               index,
-              year
+              year,
+              course
             ),
           () =>
             createCell(
@@ -286,7 +294,8 @@ export default function CourseSettings({
               "tue",
               schedule.afternoon.tue[index],
               index,
-              year
+              year,
+              course
             ),
           () =>
             createCell(
@@ -294,7 +303,8 @@ export default function CourseSettings({
               "wed",
               schedule.afternoon.wed[index],
               index,
-              year
+              year,
+              course
             ),
           () =>
             createCell(
@@ -302,7 +312,8 @@ export default function CourseSettings({
               "thu",
               schedule.afternoon.thu[index],
               index,
-              year
+              year,
+              course
             ),
           () =>
             createCell(
@@ -310,7 +321,8 @@ export default function CourseSettings({
               "fri",
               schedule.afternoon.fri[index],
               index,
-              year
+              year,
+              course
             )
         );
       });
@@ -325,7 +337,8 @@ export default function CourseSettings({
               "mon",
               schedule.evening.mon[index],
               index,
-              year
+              year,
+              course
             ),
           () =>
             createCell(
@@ -333,7 +346,8 @@ export default function CourseSettings({
               "tue",
               schedule.evening.tue[index],
               index,
-              year
+              year,
+              course
             ),
           () =>
             createCell(
@@ -341,7 +355,8 @@ export default function CourseSettings({
               "wed",
               schedule.evening.wed[index],
               index,
-              year
+              year,
+              course
             ),
           () =>
             createCell(
@@ -349,7 +364,8 @@ export default function CourseSettings({
               "thu",
               schedule.evening.thu[index],
               index,
-              year
+              year,
+              course
             ),
           () =>
             createCell(
@@ -357,7 +373,8 @@ export default function CourseSettings({
               "fri",
               schedule.evening.fri[index],
               index,
-              year
+              year,
+              course
             )
         );
       });
@@ -367,7 +384,7 @@ export default function CourseSettings({
 
   const renderTableSettings = (course) => {
     return course.schedule.map((year, index) => {
-      let rows = createRows(year, index);
+      let rows = createRows(year, index, course);
       return (
         <div key={index}>
           <Typography variant="h5" className={classes.yearTitle}>
@@ -455,18 +472,21 @@ export default function CourseSettings({
             Avançar
           </Button>
         </div>
-
-        <TableCellForm
-          open={modal}
-          handleClose={() => {
-            setModal(false);
-            setSelectedCell({
-              ...empty_cell,
-            });
-          }}
-          onChange={updateCell}
-          cell={selectedCell}
-        />
+        {modal && (
+          <TableCellForm
+            course={selectedCourse}
+            open={modal}
+            handleClose={() => {
+              setModal(false);
+              setSelectedCourse(null);
+              setSelectedCell({
+                ...empty_cell,
+              });
+            }}
+            onChange={updateCell}
+            cell={selectedCell}
+          />
+        )}
 
         <GASettings
           open={settings}

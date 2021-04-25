@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-
+import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import Modal from "@material-ui/core/Modal";
 import Typography from "@material-ui/core/Typography";
@@ -9,15 +9,34 @@ import TextField from "@material-ui/core/TextField";
 import CloseIcon from "@material-ui/icons/Close";
 import Divider from "@material-ui/core/Divider";
 
-function TableCellForm({ open, handleClose, onChange, cell }) {
+function TableCellForm({ open, handleClose, onChange, cell, course }) {
   const classes = useStyles();
-  const [subject, setSubject] = useState("");
-  const [professor, setProfessor] = useState("");
+  const [openAutocomplete, setOpenAutocomplete] = useState(false);
+  const [subject, setSubject] = useState(() => {
+    if (cell.subject) {
+      return cell.subject.name;
+    } else {
+      return "";
+    }
+  });
+  const [professor, setProfessor] = useState(() => {
+    if (cell.professor) {
+      return cell.professor.name;
+    } else {
+      return "";
+    }
+  });
+  const [filteredSubjects, setFilteredSubjects] = useState([]);
 
   useEffect(() => {
-    setSubject(!!cell.subject ? cell.subject.name : "");
-    setProfessor(!!cell.professor ? cell.professor.name : "");
-  }, [cell]);
+    if (subject.length >= 3 && course) {
+      setFilteredSubjects(
+        course.subjects.filter((sj) => sj.name.includes(subject.toUpperCase()))
+      );
+    } else {
+      setFilteredSubjects([]);
+    }
+  }, [subject, course]);
 
   return (
     <Modal
@@ -40,9 +59,29 @@ function TableCellForm({ open, handleClose, onChange, cell }) {
             label="Nome da Disciplina"
             value={subject}
             placeholder="BANCO DE DADOS I"
-            onChange={(e) => setSubject(e.target.value.toUpperCase())}
+            onChange={(e) => {
+              setOpenAutocomplete(true);
+              setSubject(e.target.value.toUpperCase());
+            }}
             className={classes.inputText}
           />
+          {openAutocomplete && !!filteredSubjects.length ? (
+            <Paper elevation={3} className={classes.paper}>
+              {filteredSubjects.map((sub, index) => (
+                <div
+                  className={classes.subjOption}
+                  key={index}
+                  onClick={() => {
+                    setSubject(sub.name);
+                    setFilteredSubjects([]);
+                    setOpenAutocomplete(false);
+                  }}
+                >
+                  <Typography>{sub.name}</Typography>
+                </div>
+              ))}
+            </Paper>
+          ) : null}
           <TextField
             label="Nome do Professor"
             value={professor}
@@ -127,5 +166,12 @@ const useStyles = makeStyles((theme) => ({
     padding: 4,
     justifyContent: "center",
     alignItems: "center",
+  },
+  subjOption: {
+    padding: 4,
+    cursor: "pointer",
+    "&:hover": {
+      backgroundColor: "#f5f5f5",
+    },
   },
 }));
