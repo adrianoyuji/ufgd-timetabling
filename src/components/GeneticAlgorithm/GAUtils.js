@@ -15,10 +15,12 @@ export const preferenceProfessor = (professorList, course) => {
   let priorityList = professorList.filter((professor) =>
     professor.preferences.subjects.some((sub) => sub.name === course.name)
   );
-  if (priorityList.length > 0) {
-    return priorityList[Math.floor(Math.random() * priorityList.length)];
+  if (priorityList.length) {
+    return priorityList[Math.floor(Math.random() * (priorityList.length - 1))];
   } else {
-    return professorList[Math.floor(Math.random() * professorList.length)];
+    return professorList[
+      Math.floor(Math.random() * (professorList.length - 1))
+    ];
   }
 };
 
@@ -45,7 +47,7 @@ export const compareNames = (arrOfNames) => {
       }
     }
   }
-  return total * 10;
+  return total * 20;
 };
 export const compareSubjects = (arrOfNames) => {
   let total = 0;
@@ -58,11 +60,27 @@ export const compareSubjects = (arrOfNames) => {
       ) {
         if (arrOfNames[i].name === arrOfNames[j].name) {
           total++;
+        } else {
+          total--;
         }
       }
     }
   }
-  return total * 1.25;
+  return total * 5;
+};
+
+export const checkSubjectSequence = (arrOfNames) => {
+  let total = 0;
+  for (let i = 0; i < arrOfNames.length; i++) {
+    if (!!arrOfNames[i] && !!arrOfNames[i + 1]) {
+      if (arrOfNames[i].name === arrOfNames[i + 1].name) {
+        total++;
+      } else {
+        total--;
+      }
+    }
+  }
+  return total * 1.5;
 };
 
 export const compareProfessorSubject = (array) => {
@@ -143,7 +161,5 @@ export const findMostFrequentSubject = (array) => {
       return [key, occurances[key]];
     }
   }
-  for (let key in occurances) {
-    return [key, occurances[key]];
-  }
+  return null;
 };

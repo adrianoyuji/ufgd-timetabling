@@ -49,7 +49,7 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
               penalties = {
                 ...penalties,
                 teacherConflict: {
-                  text: "Um professor está dando aula no mesmo horário",
+                  warning: "Um professor está dando aula no mesmo horário",
                   deductedScore: value,
                 },
               };
@@ -72,9 +72,9 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
               ) {
                 let prof = professors.find(
                   (professor) =>
-                    professor.id ===
+                    professor.name ===
                     individual[course][year][period][days[day]][cell].professor
-                      .id
+                      .name
                 );
                 if (
                   !!prof &&
@@ -94,7 +94,9 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
                         penalties = {
                           ...penalties,
                           teacherPreference:
-                            "Um professor está alocado em um horário de indisponibilidade",
+                            "Docente " +
+                            prof.name +
+                            " está alocado em um horário de indisponibilidade",
                         };
                         score = score - 50;
                         break;
@@ -245,52 +247,6 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
       }
     }
 
-    /*    //checks if subject has the same professor
-    for (let course in individual) {
-      for (let year in individual[course]) {
-        let subjectProfessors = {};
-        for (let period in individual[course][year]) {
-          for (let day in days) {
-            for (let cell in individual[course][year][period][days[day]]) {
-              if (
-                !!individual[course][year][period][days[day]][cell].professor
-              ) {
-                if (
-                  !subjectProfessors[
-                    individual[course][year][period][days[day]][cell].subject
-                      .name
-                  ]
-                ) {
-                  subjectProfessors = {
-                    ...subjectProfessors,
-                    [individual[course][year][period][days[day]][cell].subject
-                      .name]: [
-                      individual[course][year][period][days[day]][cell]
-                        .professor.name,
-                    ],
-                  };
-                } else {
-                  subjectProfessors = {
-                    ...subjectProfessors,
-                    [individual[course][year][period][days[day]][cell].subject
-                      .name]: [
-                      ...subjectProfessors[
-                        individual[course][year][period][days[day]][cell]
-                          .subject.name
-                      ],
-                      individual[course][year][period][days[day]][cell]
-                        .professor.name,
-                    ],
-                  };
-                }
-              }
-            }
-          }
-        }
-        score += GA.compareProfessorSubject({ ...subjectProfessors });
-      }
-    } */
-
     return { score: score, penalties };
   };
 
@@ -333,7 +289,7 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
   const mutation = (arr) => {
     let children = JSON.parse(JSON.stringify(arr));
     if (config.mutationProbability - Math.floor(Math.random() * 101) >= 0) {
-      if (Math.floor(Math.random() * 9)) {
+      if (Math.floor(Math.random() * 9) > 3) {
         // randomlychanges a cell location
         for (let i in children) {
           for (let j in children[i]) {
@@ -504,7 +460,7 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
   const crossover = (parents) => {
     let insertedSubjects = {};
     let courseSubjects = [];
-    let counter = 0;
+    let counter = 1;
     let insertedProfessors = {};
     let courseProfessors = [];
     if (config.crossoverProbability - Math.floor(Math.random() * 101) >= 0) {
@@ -605,7 +561,7 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
       }
 
       let filledIndex = {};
-      counter = 0;
+      counter = 1;
       //maps second child and creates an array with child 1 equal indexes
 
       for (let course in taggedParents[1]) {
@@ -616,22 +572,15 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
                 if (
                   !!taggedParents[1][course][year][period][day][cell].subject
                 ) {
-                  if (
-                    !!courseSubjects[course][
-                      taggedParents[1][course][year][period][day][cell].subject
-                        .name
-                    ]
-                  ) {
-                    let cellKey = courseSubjects[course][
-                      taggedParents[1][course][year][period][day][cell].subject
-                        .name
-                    ].pop();
-                    taggedParents[1][course][year][period][day][cell] = {
-                      ...taggedParents[1][course][year][period][day][cell],
-                      key: cellKey,
-                    };
-                    filledIndex = { ...filledIndex, [cellKey]: counter };
-                  }
+                  let cellKey = courseSubjects[course][
+                    taggedParents[1][course][year][period][day][cell].subject
+                      .name
+                  ].pop();
+                  taggedParents[1][course][year][period][day][cell] = {
+                    ...taggedParents[1][course][year][period][day][cell],
+                    key: cellKey,
+                  };
+                  filledIndex = { ...filledIndex, [cellKey]: counter };
                 } else {
                   taggedParents[1][course][year][period][day][
                     cell
@@ -659,8 +608,8 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
                 let doing = true;
                 while (doing) {
                   if (
-                    taggedParents[1][course][year][period][day][cell]
-                      .subject === null &&
+                    !taggedParents[1][course][year][period][day][cell]
+                      .subject &&
                     !!filledIndex[
                       taggedParents[1][course][year][period][day][cell].key
                     ]
@@ -901,16 +850,12 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
       population[Math.floor(Math.random() * config.maxPopSize)],
       population[Math.floor(Math.random() * config.maxPopSize)],
       population[Math.floor(Math.random() * config.maxPopSize)],
-      population[Math.floor(Math.random() * config.maxPopSize)],
-      population[Math.floor(Math.random() * config.maxPopSize)],
     ];
 
     let maxScore = Math.max(
       individuals[0][individuals[0].length - 1].score,
       individuals[1][individuals[1].length - 1].score,
-      individuals[2][individuals[2].length - 1].score,
-      individuals[3][individuals[3].length - 1].score,
-      individuals[4][individuals[4].length - 1].score
+      individuals[2][individuals[2].length - 1].score
     );
     return individuals.find(
       (individual) => individual[individual.length - 1].score === maxScore
@@ -918,6 +863,7 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
   };
 
   const startGeneticAlgorithm = () => {
+    let startTimer = performance.now();
     //generates first generation of individuals
     let population = [];
     for (let i = 0; i < config.maxPopSize; i++) {
@@ -937,7 +883,7 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
     }
     //let firstGen = [...population];
 
-    let bestIndividual = [{ score: -1000 }];
+    let bestIndividual = [{ score: -1000999 }];
     let bestScoreOfPrevPops = [];
     let bestIndiviualOfEachGeneration = [];
     //start of the generation crossing
@@ -962,7 +908,9 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
         ...bestScoreOfPrevPops,
         currentBestIndividual[currentBestIndividual.length - 1],
       ];
-      bestIndiviualOfEachGeneration.push(currentBestIndividual);
+      bestIndiviualOfEachGeneration.push(
+        currentBestIndividual[currentBestIndividual.length - 1].score
+      );
       if (
         currentBestIndividual[currentBestIndividual.length - 1].score >
         bestIndividual[bestIndividual.length - 1].score
@@ -970,13 +918,21 @@ function GeneticAlgorithm({ courseTables, config, selectedSemester }) {
         bestIndividual = [...currentBestIndividual];
       }
     }
-    console.log(bestIndiviualOfEachGeneration);
+    let resultText = "";
+    for (let i in bestIndiviualOfEachGeneration) {
+      resultText += bestIndiviualOfEachGeneration[i] + ", \n";
+    }
+    console.log(resultText);
+    //  console.log(bestIndiviualOfEachGeneration);
     console.log(bestIndividual);
     let result = courseTables.map((course, index) => ({
       ...course,
       schedule: bestIndividual[index],
     }));
     setNewTables(result);
+    let finish = performance.now();
+
+    console.log(`Process concluded in ${finish - startTimer} ms`);
   };
 
   useEffect(() => {
